@@ -27,8 +27,8 @@ enum e_read_return_value {
 
 int			main(void);
 char		*get_next_line(int fd);
-static char	*get_whole_str_from_read(int fd,char *whole_str,size_t *line_size);
-static char	*get_one_line(char *whole_str, size_t *line_size);
+//static char	*get_whole_str_from_read(int fd, char *whole_str, size_t *line_size);
+//static char	*get_one_line(char *whole_str, size_t *line_size);
 char		*ft_strchr(const char *s, int c);
 size_t		ft_strlen(const char *str);
 char		*ft_strjoin(char const *s1, char const *s2);
