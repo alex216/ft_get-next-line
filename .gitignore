@@ -3,3 +3,4 @@ test.txt
 .vscode
 get_next_line
 peda*
+.gdb*
