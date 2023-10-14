@@ -15,12 +15,14 @@
 
 #define BUFFER_SIZE 5
 
-static char	*get_whole_str_from_read(int fd, char *whole_str, size_t *line_size)
+static char	*get_whole_str_from_read(int fd, char *whole_str)
 {
 	char		*buf;
 	int			bytes_read;
 	char		*return_addr;
+	size_t		line_size;
 
+	line_size = ft_strchr(whole_str, '\0') - whole_str;
 	buf = malloc(sizeof(char) * (BUFFER_SIZE + 1));
 	if (buf == NULL)
 		return (NULL);
@@ -36,69 +38,70 @@ static char	*get_whole_str_from_read(int fd, char *whole_str, size_t *line_size)
 		return_addr = ft_strchr(buf, '\n');
 		if (return_addr)
 		{
-			*line_size += return_addr - buf;
-			printf("line_size: %ld\n", *line_size);
+			line_size += return_addr - buf;
+			printf("line_size: %ld\n", line_size);
 			break;
 		}
-		*line_size += BUFFER_SIZE;
+		line_size += BUFFER_SIZE;
 	}
 	free(buf);
 	return (whole_str);
 }
 
-static char	*get_one_line(char *whole_str, size_t *line_size)
-{
-	char	*line;
+//static char	*get_one_line(char *whole_str)
+//{
+//	char	*line;
+//	size_t	line_size;
+//
+//	line_size = ft_strchr(whole_str, '\n') - whole_str;
+//	line = malloc(sizeof(char) * line_size + 1);
+//	if (line == NULL)
+//		return (NULL);
+//	ft_strlcpy(line, whole_str, line_size + 1);
+//	return (line);
+//}
 
-	line = malloc(sizeof(char) * *line_size + 1);
-	if (line == NULL)
-		return (NULL);
-	ft_strlcpy(line, whole_str, *line_size + 1);
-	return (line);
-}
-
-static char	*get_next_whole_str(char *whole_str, size_t *line_size)
-{
-	char	*dst;
-
-	dst = malloc(sizeof(char) * *line_size + 1);
-	if (dst == NULL)
-		return (NULL);
-	ft_strlcpy(dst, whole_str + *line_size , BUFFER_SIZE);
-	return (dst);
-}
+//static char	*get_next_whole_str(char *whole_str)
+//{
+//	char	*dst;
+//	size_t	line_size;
+//
+//	line_size = ft_strchr(whole_str, '\n') - whole_str;
+//	dst = malloc(sizeof(char) * line_size + 1);
+//	if (dst == NULL)
+//		return (NULL);
+//	ft_strlcpy(dst, whole_str + line_size , BUFFER_SIZE);
+//	return (dst);
+//}
 
 char	*get_next_line(int fd)
 {
 	static char	*whole_str = "";
-	char		*line;
-	size_t		*line_size;
-	size_t			i;
+	//char		*line;
 
-	i = 0;
-
-	line_size = &i;
 	// 1.
-	whole_str = get_whole_str_from_read(fd, whole_str, line_size);
+	whole_str = get_whole_str_from_read(fd, whole_str);
 	if (whole_str == NULL)
 		return (NULL);
 	printf("whole: %s\n", whole_str);
 
-	// 2.
-	line = get_one_line(whole_str, line_size);
-	if (line == NULL)
-		return (NULL);
-	printf("line: %s\n", line);
+//	// 2.
+//	line = get_one_line(whole_str);
+//	if (line == NULL)
+//		return (NULL);
+//	printf("line: %s\n", line);
 
-	// 3.
-	whole_str = get_next_whole_str(whole_str, line_size);
-	if (whole_str == NULL)
-		return (NULL);
-	printf("whole2: %s\n", whole_str);
-	return (line);
+//	// 3.
+//	whole_str = get_next_whole_str(whole_str);
+//	if (whole_str == NULL)
+//		return (NULL);
+//	printf("whole2: %s\n", whole_str);
+
+	return (NULL);
+//	return (line);
 }
 
-//////////////////////////////////////////// test function
+////////////////////////////////////////// test function
 int	main(void)
 {
 	int fd1;
@@ -115,10 +118,10 @@ int	main(void)
 	printf("%s\n", result);
 	puts("#### first line ####\n");
 
-	result = get_next_line(fd1);
-	puts("\n#### second line ####");
-	printf("%s\n", result);
-	puts("#### second line ####\n");
+//	result = get_next_line(fd1);
+//	puts("\n#### second line ####");
+//	printf("%s\n", result);
+//	puts("#### second line ####\n");
 
 	free(result);
 	close(fd1);
