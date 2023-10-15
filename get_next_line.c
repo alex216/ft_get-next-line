@@ -13,8 +13,6 @@
 #include "get_next_line.h"
 #include <stddef.h>
 
-#define BUFFER_SIZE 5
-
 static char	*get_whole_str_from_read(int fd, char *whole_str)
 {
 	char		*buf;
@@ -120,10 +118,10 @@ int	main(void)
 
 //	fd1 = open("empty.txt", O_RDONLY);
 //	fd1 = open("emptyreal.txt", O_RDONLY);
-//	fd1 = open("test.txt", O_RDONLY);
+	fd1 = open("test.txt", O_RDONLY);
 //	fd1 = 0;
-	fd1 = open("oneline_with_nl.txt", O_RDONLY);
-	//fd1 = open("oneline_withno_nl.txt", O_RDONLY);
+//	fd1 = open("oneline_with_nl.txt", O_RDONLY);
+//	fd1 = open("oneline_withno_nl.txt", O_RDONLY);
 	if (fd1 == -1)
 	{
 		puts("open error, not this project's fault!");

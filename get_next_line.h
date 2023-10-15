@@ -20,6 +20,10 @@
 # include <unistd.h>
 # include <errno.h>
 
+#ifndef BUFFER_SIZE
+# define BUFFER_SIZE 5
+#endif
+
 
 enum e_read_return_value {
     READ_ERROR  = -1,
