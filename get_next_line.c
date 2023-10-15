@@ -20,9 +20,7 @@ static char	*get_whole_str_from_read(int fd, char *whole_str)
 	char		*buf;
 	int			bytes_read;
 	char		*return_addr;
-	size_t		line_size;
 
-	line_size = ft_strchr(whole_str, '\0') - whole_str;
 	buf = malloc(sizeof(char) * (BUFFER_SIZE + 1));
 	if (buf == NULL)
 		return (NULL);
@@ -38,11 +36,8 @@ static char	*get_whole_str_from_read(int fd, char *whole_str)
 		return_addr = ft_strchr(buf, '\n');
 		if (return_addr)
 		{
-			line_size += return_addr - buf;
-			printf("line_size: %ld\n", line_size);
 			break;
 		}
-		line_size += BUFFER_SIZE;
 	}
 	free(buf);
 	return (whole_str);
@@ -67,12 +62,16 @@ static char	*get_next_whole_str(char *whole_str)
 {
 	char	*dst;
 	size_t	line_size;
+	char	*nl_index;
 
-	line_size = ft_strchr(whole_str, '\n') - whole_str;
-	dst = malloc(sizeof(char) * line_size + 1);
+	nl_index = ft_strchr(whole_str, '\n');
+	if (nl_index == NULL)
+		return (NULL);
+	line_size = ft_strchr(whole_str, '\0') - nl_index;
+	dst = malloc(sizeof(char) * line_size);
 	if (dst == NULL)
 		return (NULL);
-	ft_strlcpy(dst, whole_str + line_size , BUFFER_SIZE);
+	ft_strlcpy(dst, nl_index + 1, line_size);
 	return (dst);
 }
 
@@ -86,24 +85,24 @@ char	*get_next_line(int fd)
 	whole_str = get_whole_str_from_read(fd, whole_str);
 	if (whole_str == NULL)
 		return (NULL);
-	printf("whole: %s\n", whole_str);
+//	printf("whole: %s\n", whole_str);
 
 	// 2.
 	line = get_one_line(whole_str);
 	if (line == NULL)
 		return (NULL);
 
-	printf("line: %s\n", line);
-	printf("len %lu\n", strlen(line));
-	for (size_t i = 0;i < strlen(line); i++)
-		printf("%d |", line[i]);
+//	printf("line: %s\n", line);
+//	printf("len %lu\n", strlen(line));
+//	for (size_t i = 0;i < strlen(line); i++)
+//		printf("%d |", line[i]);
 
 	// 3.
 	whole_str = get_next_whole_str(whole_str);
 	if (whole_str == NULL)
 		return (NULL);
 
-	printf("whole2: %s\n", whole_str);
+//	printf("whole2: %s\n", whole_str);
 	printf("len %lu\n", strlen(whole_str));
 	for (size_t i = 0;i < strlen(whole_str); i++)
 		printf("%d |", whole_str[i]);
@@ -132,9 +131,9 @@ int	main(void)
 	result = get_next_line(fd1);
 	if (result == NULL)
 		return (0);
-//	puts("\n#### second line ####");
-//	printf("%s", result);
-//	puts("#### second line ####\n");
+	puts("\n#### second line ####");
+	printf("%s", result);
+	puts("#### second line ####\n");
 
 	free(result);
 	close(fd1);
