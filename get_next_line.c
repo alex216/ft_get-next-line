@@ -47,10 +47,12 @@ static char	*get_one_line(char *whole_str)
 {
 	char	*line;
 	size_t	line_size;
+	char	*nl_index;
 
-	if (ft_strchr(whole_str, '\n') == NULL)
-		return (NULL);
-	line_size = ft_strchr(whole_str, '\n') - whole_str;
+	nl_index = ft_strchr(whole_str, '\n');
+	if (nl_index == NULL)
+		return (whole_str);
+	line_size = nl_index - whole_str;
 	line = malloc(sizeof(char) * line_size + 2);
 	if (line == NULL)
 		return (NULL);
@@ -66,7 +68,7 @@ static char	*get_next_whole_str(char *whole_str)
 
 	nl_index = ft_strchr(whole_str, '\n');
 	if (nl_index == NULL)
-		return (NULL);
+		return (ft_strdup(""));
 	line_size = ft_strchr(whole_str, '\0') - nl_index;
 	dst = malloc(sizeof(char) * line_size);
 	if (dst == NULL)
@@ -85,7 +87,6 @@ char	*get_next_line(int fd)
 	whole_str = get_whole_str_from_read(fd, whole_str);
 	if (whole_str == NULL)
 		return (NULL);
-//	printf("whole: %s\n", whole_str);
 
 	// 2.
 	line = get_one_line(whole_str);
@@ -99,11 +100,12 @@ char	*get_next_line(int fd)
 
 	// 3.
 	whole_str = get_next_whole_str(whole_str);
+	printf("%s\n", whole_str);
 	if (whole_str == NULL)
 		return (NULL);
 
 //	printf("whole2: %s\n", whole_str);
-	printf("len %lu\n", strlen(whole_str));
+	printf("wholestr: '%s' len is %lu :", whole_str, strlen(whole_str));
 	for (size_t i = 0;i < strlen(whole_str); i++)
 		printf("%d |", whole_str[i]);
 
@@ -116,24 +118,50 @@ int	main(void)
 	int fd1;
 	char *result;
 
-	// fd1 = open("empty.txt", O_RDONLY);
-	fd1 = open("test.txt", O_RDONLY);
+//	fd1 = open("empty.txt", O_RDONLY);
+//	fd1 = open("emptyreal.txt", O_RDONLY);
+//	fd1 = open("test.txt", O_RDONLY);
+//	fd1 = 0;
+	fd1 = open("oneline_with_nl.txt", O_RDONLY);
+	//fd1 = open("oneline_withno_nl.txt", O_RDONLY);
 	if (fd1 == -1)
+	{
+		puts("open error, not this project's fault!");
 		return (0);
+	}
 
 	result = get_next_line(fd1);
 	if (result == NULL)
+	{
+		puts("null return from gnl.c by gnl");
+		printf("errno is %d\n", errno);
 		return (0);
+	}
 	puts("\n#### first line ####");
 	printf("%s", result);
 	puts("#### first line ####\n");
 
 	result = get_next_line(fd1);
 	if (result == NULL)
+	{
+		puts("null return from gnl.c");
+		printf("errno is %d\n", errno);
 		return (0);
+	}
 	puts("\n#### second line ####");
 	printf("%s", result);
 	puts("#### second line ####\n");
+
+	result = get_next_line(fd1);
+	if (result == NULL)
+	{
+		puts("null return from gnl.c");
+		printf("errno is %d\n", errno);
+		return (0);
+	}
+	puts("\n#### third line ####");
+	printf("%s", result);
+	puts("#### third line ####\n");
 
 	free(result);
 	close(fd1);

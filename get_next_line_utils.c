@@ -66,3 +66,16 @@ char	*ft_strjoin(char const *s1, char const *s2)
 	ft_strlcpy(dst + s1_len, s2, s2_len + 1);
 	return (dst);
 }
+
+char	*ft_strdup(const char *src)
+{
+	char	*dst;
+	size_t	length;
+
+	length = ft_strlen(src);
+	dst = malloc(sizeof(char) * (length + 1));
+	if (dst == NULL)
+		return (NULL);
+	ft_strlcpy(dst, src, length + 1);
+	return (dst);
+}
