@@ -32,8 +32,6 @@ static char	*get_whole_str_from_read(int fd, char *whole_str)
 		if (bytes_read == READ_ERROR | bytes_read == READ_END)
 			break;
 		buf[bytes_read] = '\0';
-		printf("\nbuf: %s\n", buf);
-		printf("line_size: %zu\n", line_size);
 		if (buf == NULL)
 			break ;
 		whole_str = ft_strjoin(whole_str, buf);
@@ -55,11 +53,13 @@ static char	*get_one_line(char *whole_str)
 	char	*line;
 	size_t	line_size;
 
+	if (ft_strchr(whole_str, '\n') == NULL)
+		return (NULL);
 	line_size = ft_strchr(whole_str, '\n') - whole_str;
-	line = malloc(sizeof(char) * line_size + 1);
+	line = malloc(sizeof(char) * line_size + 2);
 	if (line == NULL)
 		return (NULL);
-	ft_strlcpy(line, whole_str, line_size + 1);
+	ft_strlcpy(line, whole_str, line_size + 2);
 	return (line);
 }
 
@@ -76,6 +76,7 @@ static char	*get_next_whole_str(char *whole_str)
 	return (dst);
 }
 
+#include <string.h>
 char	*get_next_line(int fd)
 {
 	static char	*whole_str = "";
@@ -91,13 +92,21 @@ char	*get_next_line(int fd)
 	line = get_one_line(whole_str);
 	if (line == NULL)
 		return (NULL);
+
 	printf("line: %s\n", line);
+	printf("len %lu\n", strlen(line));
+	for (size_t i = 0;i < strlen(line); i++)
+		printf("%d |", line[i]);
 
 	// 3.
 	whole_str = get_next_whole_str(whole_str);
 	if (whole_str == NULL)
 		return (NULL);
+
 	printf("whole2: %s\n", whole_str);
+	printf("len %lu\n", strlen(whole_str));
+	for (size_t i = 0;i < strlen(whole_str); i++)
+		printf("%d |", whole_str[i]);
 
 	return (line);
 }
@@ -112,16 +121,19 @@ int	main(void)
 	fd1 = open("test.txt", O_RDONLY);
 	if (fd1 == -1)
 		return (0);
+
 	result = get_next_line(fd1);
 	if (result == NULL)
 		return (0);
 	puts("\n#### first line ####");
-	printf("%s\n", result);
+	printf("%s", result);
 	puts("#### first line ####\n");
 
-	//result = get_next_line(fd1);
+	result = get_next_line(fd1);
+	if (result == NULL)
+		return (0);
 //	puts("\n#### second line ####");
-//	printf("%s\n", result);
+//	printf("%s", result);
 //	puts("#### second line ####\n");
 
 	free(result);
