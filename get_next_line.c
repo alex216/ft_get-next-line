@@ -6,7 +6,7 @@
 /*   By: yliu <yliu@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/06 09:58:34 by yliu              #+#    #+#             */
-/*   Updated: 2023/10/13 18:07:48 by yliu             ###   ########.fr       */
+/*   Updated: 2023/10/17 17:42:07 by yliu             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,9 +15,8 @@
 
 static char	*get_whole_str_from_read(int fd, char *whole_str)
 {
-	char		*buf;
-	int			bytes_read;
-	char		*return_addr;
+	char	*buf;
+	int		bytes_read;
 
 	buf = malloc(sizeof(char) * (BUFFER_SIZE + 1));
 	if (buf == NULL)
@@ -25,19 +24,22 @@ static char	*get_whole_str_from_read(int fd, char *whole_str)
 	while (1)
 	{
 		bytes_read = read(fd, buf, BUFFER_SIZE);
-		if (bytes_read == READ_ERROR | bytes_read == READ_END)
-			break;
-		buf[bytes_read] = '\0';
-		if (buf == NULL)
+		if (bytes_read == READ_ERROR)
 			break ;
+		if (bytes_read == READ_END)
+			break ;
+
+		buf[bytes_read] = '\0';
 		whole_str = ft_strjoin(whole_str, buf);
-		return_addr = ft_strchr(buf, '\n');
-		if (return_addr)
-		{
-			break;
-		}
+		if (ft_strchr(buf, '\n') != NULL)
+			break ;
 	}
 	free(buf);
+	if (bytes_read == READ_ERROR)
+		return (NULL);
+	if (bytes_read == READ_END)
+		return (NULL);
+
 	return (whole_str);
 }
 
@@ -76,6 +78,7 @@ static char	*get_next_whole_str(char *whole_str)
 }
 
 #include <string.h>
+
 char	*get_next_line(int fd)
 {
 	static char	*whole_str = "";
@@ -91,37 +94,27 @@ char	*get_next_line(int fd)
 	if (line == NULL)
 		return (NULL);
 
-//	printf("line: %s\n", line);
-//	printf("len %lu\n", strlen(line));
-//	for (size_t i = 0;i < strlen(line); i++)
-//		printf("%d |", line[i]);
-
 	// 3.
 	whole_str = get_next_whole_str(whole_str);
-	printf("%s\n", whole_str);
 	if (whole_str == NULL)
 		return (NULL);
-
-//	printf("whole2: %s\n", whole_str);
-	printf("wholestr: '%s' len is %lu :", whole_str, strlen(whole_str));
-	for (size_t i = 0;i < strlen(whole_str); i++)
-		printf("%d |", whole_str[i]);
 
 	return (line);
 }
 
-////////////////////////////////////////// test function
+//////////////////////////////////////// test function
 int	main(void)
 {
-	int fd1;
-	char *result;
+	int		fd1;
+	char	*result;
 
-//	fd1 = open("empty.txt", O_RDONLY);
-//	fd1 = open("emptyreal.txt", O_RDONLY);
-	fd1 = open("test.txt", O_RDONLY);
-//	fd1 = 0;
-//	fd1 = open("oneline_with_nl.txt", O_RDONLY);
-//	fd1 = open("oneline_withno_nl.txt", O_RDONLY);
+	fd1 = open("empty.txt", O_RDONLY);
+	//	fd1 = open("emptyreal.txt", O_RDONLY);
+	//	fd1 = open("test.txt", O_RDONLY);
+	//	fd1 = 0;
+	// fd1 = open("oneline_with_nl.txt", O_RDONLY);
+	// fd1 = open("oneline_withno_nl.txt", O_RDONLY);
+	// fd1 = open("string_nl_string.txt", O_RDONLY);
 	if (fd1 == -1)
 	{
 		puts("open error, not this project's fault!");
@@ -129,36 +122,27 @@ int	main(void)
 	}
 
 	result = get_next_line(fd1);
-	if (result == NULL)
-	{
-		puts("null return from gnl.c by gnl");
-		printf("errno is %d\n", errno);
-		return (0);
-	}
 	puts("\n#### first line ####");
-	printf("%s", result);
+	if (result == NULL)
+		printf("null by second errno is %d\n", ENOMEM);
+	else
+		printf("%s", result);
 	puts("#### first line ####\n");
 
 	result = get_next_line(fd1);
-	if (result == NULL)
-	{
-		puts("null return from gnl.c");
-		printf("errno is %d\n", errno);
-		return (0);
-	}
 	puts("\n#### second line ####");
-	printf("%s", result);
+	if (result == NULL)
+		printf("null by second errno is %d\n", ENOMEM);
+	else
+		printf("%s", result);
 	puts("#### second line ####\n");
 
 	result = get_next_line(fd1);
-	if (result == NULL)
-	{
-		puts("null return from gnl.c");
-		printf("errno is %d\n", errno);
-		return (0);
-	}
 	puts("\n#### third line ####");
-	printf("%s", result);
+	if (result == NULL)
+		printf("null by second errno is %d\n", ENOMEM);
+	else
+		printf("%s", result);
 	puts("#### third line ####\n");
 
 	free(result);
