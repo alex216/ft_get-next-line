@@ -12,6 +12,7 @@
 
 #include "get_next_line.h"
 #include <stddef.h>
+#include <string.h>
 
 #ifndef BUFFER_SIZE
 # define BUFFER_SIZE 5
@@ -33,7 +34,6 @@ static char	*get_whole_str_from_read(int fd, char *whole_str)
 			break ;
 		if (bytes_read == READ_END)
 			break ;
-
 		buf[bytes_read] = '\0';
 		tmp_str = ft_strjoin(whole_str, buf);
 		free(whole_str);
@@ -45,8 +45,10 @@ static char	*get_whole_str_from_read(int fd, char *whole_str)
 	if (bytes_read == READ_ERROR)
 		return (NULL);
 	if (bytes_read == READ_END)
+	{
+		free(whole_str);
 		return (NULL);
-
+	}
 	return (whole_str);
 }
 
@@ -91,13 +93,12 @@ static char	*get_next_whole_str(char *whole_str)
 	return (dst);
 }
 
-#include <string.h>
-
 char	*get_next_line(int fd)
 {
-	static char	*whole_str = "";
+	static char	*whole_str;// = "";
 	char		*line;
 
+	//	whole_str = "";
 	// 1.
 	whole_str = get_whole_str_from_read(fd, whole_str);
 	if (whole_str == NULL)
@@ -124,11 +125,11 @@ int	main(void)
 
 	//fd1 = open("empty.txt", O_RDONLY);
 	fd1 = open("nl.txt", O_RDONLY);
-	//	fd1 = open("test.txt", O_RDONLY);
-	//	fd1 = 0;
-	// fd1 = open("oneline_with_nl.txt", O_RDONLY);
-	// fd1 = open("oneline_withno_nl.txt", O_RDONLY);
-	// fd1 = open("string_nl_string.txt", O_RDONLY);
+	//fd1 = open("test.txt", O_RDONLY);
+	//fd1 = 0;
+	//fd1 = open("oneline_with_nl.txt", O_RDONLY);
+	//fd1 = open("oneline_withno_nl.txt", O_RDONLY);
+	//fd1 = open("string_nl_string.txt", O_RDONLY);
 	if (fd1 == -1)
 	{
 		puts("open error, not this project's fault!");
@@ -143,22 +144,22 @@ int	main(void)
 		printf("%s", result);
 	puts("#### first line ####\n");
 
-//	result = get_next_line(fd1);
-//	puts("\n#### second line ####");
-//	if (result == NULL)
-//		printf("(null) by second errno is %d\n", ENOMEM);
-//	else
-//		printf("%s", result);
-//	puts("#### second line ####\n");
-//
-//	result = get_next_line(fd1);
-//	puts("\n#### third line ####");
-//	if (result == NULL)
-//		printf("(null) by third errno is %d\n", ENOMEM);
-//	else
-//		printf("%s", result);
-//	puts("#### third line ####\n");
-//
+	result = get_next_line(fd1);
+	puts("\n#### second line ####");
+	if (result == NULL)
+		printf("(null) by second errno is %d\n", ENOMEM);
+	else
+		printf("%s", result);
+	puts("#### second line ####\n");
+
+	result = get_next_line(fd1);
+	puts("\n#### third line ####");
+	if (result == NULL)
+		printf("(null) by third errno is %d\n", ENOMEM);
+	else
+		printf("%s", result);
+	puts("#### third line ####\n");
+
 	free(result);
 	close(fd1);
 	return (0);
