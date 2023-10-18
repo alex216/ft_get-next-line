@@ -8,3 +8,4 @@ get_next_line.h.gch
 *.txt
 empty.txt
 gnltester/
+call_graph*
