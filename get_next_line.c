@@ -123,8 +123,8 @@ int	main(void)
 	int		fd1;
 	char	*result;
 
-	//fd1 = open("empty.txt", O_RDONLY);
-	fd1 = open("nl.txt", O_RDONLY);
+	//fd1 = open("empty.txt", O_RDONLY); ok
+	//fd1 = open("nl.txt", O_RDONLY);
 	//fd1 = open("test.txt", O_RDONLY);
 	//fd1 = 0;
 	//fd1 = open("oneline_with_nl.txt", O_RDONLY);
