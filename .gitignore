@@ -7,4 +7,4 @@ peda*
 get_next_line.h.gch
 *.txt
 empty.txt
-gnltester/*
+gnltester/
