@@ -43,10 +43,16 @@ static char	*get_whole_str_from_read(int fd, char *whole_str)
 			break ;
 	}
 	free(buf);
-	if (bytes_read == READ_ERROR | bytes_read == READ_END)
+	if (bytes_read == READ_ERROR)
 	{
 		free(whole_str);
 		return (NULL);
+	}
+	if (bytes_read == READ_END)
+	{
+		return(whole_str);
+		// free(whole_str);
+		// return (NULL);
 	}
 	return (whole_str);
 }
@@ -59,7 +65,7 @@ static char	*get_one_line(char *whole_str)
 
 	nl_index = ft_strchr(whole_str, '\n');
 	if (nl_index == NULL)
-		return (whole_str);
+		return (ft_strdup(whole_str));
 	line_size = nl_index - whole_str;
 	line = malloc(sizeof(char) * line_size + 2);
 	if (line == NULL)
@@ -109,7 +115,6 @@ char	*get_next_line(int fd)
 	line = get_one_line(whole_str);
 	if (line == NULL)
 	{
-		free(whole_str);
 		return (NULL);
 	}
 	// 3.
@@ -120,13 +125,13 @@ char	*get_next_line(int fd)
 	}
 	return (line);
 }
-
+//
 // //////////////////////////////////////// test function
 // int	main(void)
 // {
 // 	int		fd1;
 // 	char	*result;
-
+//
 // 	// fd1 = open("empty.txt", O_RDONLY);
 // 	fd1 = open("nl.txt", O_RDONLY);
 // 	// fd1 = open("test.txt", O_RDONLY);
@@ -147,21 +152,22 @@ char	*get_next_line(int fd)
 // 		printf("%s", result);
 // 	puts("#### first line ####\n");
 // 	result = get_next_line(fd1);
-
-// 	// puts("\n#### second line ####");
-// 	// if (result == NULL)
-// 	// 	printf("(null) by second errno is %d\n", ENOMEM);
-// 	// else
-// 	// 	printf("%s", result);
-// 	// puts("#### second line ####\n");
-// 	// result = get_next_line(fd1);
-// 	// puts("\n#### third line ####");
-// 	// if (result == NULL)
-// 	// 	printf("(null) by third errno is %d\n", ENOMEM);
-// 	// else
-// 	// 	printf("%s", result);
-// 	// puts("#### third line ####\n");
-
+//
+// 	puts("\n#### second line ####");
+// 	if (result == NULL)
+// 		printf("(null) by second errno is %d\n", ENOMEM);
+// 	else
+// 		printf("%s", result);
+// 	puts("#### second line ####\n");
+//
+// 	result = get_next_line(fd1);
+// 	puts("\n#### third line ####");
+// 	if (result == NULL)
+// 		printf("(null) by third errno is %d\n", ENOMEM);
+// 	else
+// 		printf("%s", result);
+// 	puts("#### third line ####\n");
+//
 // 	free(result);
 // 	close(fd1);
 // 	return (0);
