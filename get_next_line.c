@@ -6,7 +6,7 @@
 /*   By: yliu <yliu@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/06 09:58:34 by yliu              #+#    #+#             */
-/*   Updated: 2023/10/18 18:12:15 by yliu             ###   ########.fr       */
+/*   Updated: 2023/10/23 23:29:46 by yliu             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -84,7 +84,7 @@ static char	*get_next_whole_str(char *whole_str)
 	if (nl_index == NULL)
 	{
 		free(whole_str);
-		return (ft_strdup(""));
+		return (NULL);
 	}
 	line_size = ft_strchr(whole_str, '\0') - nl_index;
 	dst = malloc(sizeof(char) * line_size);
@@ -109,66 +109,55 @@ char	*get_next_line(int fd)
 	whole_str = get_whole_str_from_read(fd, whole_str);
 	if (whole_str == NULL)
 	{
+		// malloce failed.
+		// READ_ERROR
 		return (NULL);
 	}
 	// 2.
 	line = get_one_line(whole_str);
 	if (line == NULL)
 	{
+		// malloc failed.
 		return (NULL);
 	}
 	// 3.
 	whole_str = get_next_whole_str(whole_str);
-	if (whole_str == NULL)
-	{
-		return (NULL);
-	}
 	return (line);
 }
-//
+
 // //////////////////////////////////////// test function
 // int	main(void)
 // {
 // 	int		fd1;
+// 	int		i;
 // 	char	*result;
 //
+// 	// fd1 = 0;
 // 	// fd1 = open("empty.txt", O_RDONLY);
 // 	fd1 = open("nl.txt", O_RDONLY);
-// 	// fd1 = open("test.txt", O_RDONLY);
-// 	// fd1 = 0;
-// 	// fd1 = open("oneline_with_nl.txt", O_RDONLY);
 // 	// fd1 = open("oneline_withno_nl.txt", O_RDONLY);
+// 	// fd1 = open("oneline_with_nl.txt", O_RDONLY);
 // 	// fd1 = open("string_nl_string.txt", O_RDONLY);
+// 	// fd1 = open("test.txt", O_RDONLY);
+// 	// fd1 = open("multi.txt", O_RDONLY);
+//
 // 	if (fd1 == -1)
 // 	{
 // 		puts("open error, not this project's fault!");
 // 		return (0);
 // 	}
-// 	result = get_next_line(fd1);
-// 	puts("\n#### first line ####");
-// 	if (result == NULL)
-// 		printf("(null) by first errno is %d\n", ENOMEM);
-// 	else
-// 		printf("%s", result);
-// 	puts("#### first line ####\n");
-// 	result = get_next_line(fd1);
 //
-// 	puts("\n#### second line ####");
-// 	if (result == NULL)
-// 		printf("(null) by second errno is %d\n", ENOMEM);
-// 	else
-// 		printf("%s", result);
-// 	puts("#### second line ####\n");
-//
-// 	result = get_next_line(fd1);
-// 	puts("\n#### third line ####");
-// 	if (result == NULL)
-// 		printf("(null) by third errno is %d\n", ENOMEM);
-// 	else
-// 		printf("%s", result);
-// 	puts("#### third line ####\n");
-//
-// 	free(result);
+// 	i = 0;
+// 	while (i < 12 && result != NULL)
+// 	{
+// 		result = get_next_line(fd1);
+// 		if (result == NULL)
+// 			printf("###%d is###:(null) by first errno is %d\n", i, ENOMEM);
+// 		else
+// 			printf("###%d is###:%s\n", i, result);
+// 		free(result);
+// 		i++;
+// 	}
 // 	close(fd1);
 // 	return (0);
 // }
