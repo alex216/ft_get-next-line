@@ -15,7 +15,7 @@
 #include <string.h>
 
 #ifndef BUFFER_SIZE
-# define BUFFER_SIZE 23
+# define BUFFER_SIZE 2
 #endif
 
 static char	*get_whole_str_from_read(int fd, char *whole_str)
@@ -43,20 +43,9 @@ static char	*get_whole_str_from_read(int fd, char *whole_str)
 			break ;
 	}
 	free(buf);
-	if (bytes_read == READ_ERROR)
+	if (bytes_read == READ_ERROR
+		|| (bytes_read == READ_END && *whole_str == '\0'))
 	{
-		free(whole_str);
-		return (NULL);
-	}
-
-	if (bytes_read == READ_END)
-	{
-		if (ft_strlen(whole_str))
-		{
-			return (whole_str);
-		}
-
-		// return(whole_str);
 		free(whole_str);
 		return (NULL);
 	}
@@ -104,36 +93,27 @@ static char	*get_next_whole_str(char *whole_str)
 	return (dst);
 }
 
+// first func's NULL guard is for both malloc fail and READ_ERROR.
+// second func's NULL guard is for malloc fail.
 char	*get_next_line(int fd)
 {
 	char		*line;
-	static char *whole_str;
+	static char	*whole_str;
 
 	if (whole_str == NULL)
 		whole_str = ft_strdup("");
-	// 1.
 	whole_str = get_whole_str_from_read(fd, whole_str);
 	if (whole_str == NULL)
-	{
-		// malloce failed.
-		// READ_ERROR
 		return (NULL);
-	}
-	// 2.
 	line = get_one_line(whole_str);
 	if (line == NULL)
-	{
-		// malloc failed.
 		return (NULL);
-	}
-	// 3.
 	whole_str = get_next_whole_str(whole_str);
 	return (line);
 }
-
-
 //
 // //
+// // //
 // //////////////////////////////////////// test function
 // int	main(void)
 // {
