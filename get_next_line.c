@@ -30,7 +30,7 @@ static char	*get_whole_str_from_read(int fd, char *whole_str)
 		free(whole_str);
 		return (NULL);
 	}
-	while (1)
+	while (ft_strchr(buf, '\n') == NULL)
 	{
 		bytes_read = read(fd, buf, BUFFER_SIZE);
 		if (bytes_read == READ_ERROR | bytes_read == READ_END)
@@ -39,24 +39,11 @@ static char	*get_whole_str_from_read(int fd, char *whole_str)
 		tmp_str = ft_strjoin(whole_str, buf);
 		free(whole_str);
 		whole_str = tmp_str;
-		if (ft_strchr(buf, '\n') != NULL)
-			break ;
 	}
 	free(buf);
-	if (bytes_read == READ_ERROR)
+	if (bytes_read == READ_ERROR
+		|| (ft_strlen(whole_str) == 0 && bytes_read == READ_END))
 	{
-		free(whole_str);
-		return (NULL);
-	}
-
-	if (bytes_read == READ_END)
-	{
-		if (ft_strlen(whole_str))
-		{
-			return (whole_str);
-		}
-
-		// return(whole_str);
 		free(whole_str);
 		return (NULL);
 	}
@@ -104,33 +91,24 @@ static char	*get_next_whole_str(char *whole_str)
 	return (dst);
 }
 
+// first func's NULL guard is for both malloc fail and READ_ERROR.
+// second func's NULL guard is for malloc fail.
 char	*get_next_line(int fd)
 {
 	char		*line;
-	static char *whole_str;
+	static char	*whole_str;
 
 	if (whole_str == NULL)
 		whole_str = ft_strdup("");
-	// 1.
 	whole_str = get_whole_str_from_read(fd, whole_str);
 	if (whole_str == NULL)
-	{
-		// malloce failed.
-		// READ_ERROR
 		return (NULL);
-	}
-	// 2.
 	line = get_one_line(whole_str);
 	if (line == NULL)
-	{
-		// malloc failed.
 		return (NULL);
-	}
-	// 3.
 	whole_str = get_next_whole_str(whole_str);
 	return (line);
 }
-
 
 //
 // //

@@ -1,11 +1,16 @@
+# exec file and swap
 a.out*
-test.txt
-.vscode
 get_next_line
+get_next_line.h.gch
+
+# debug use
 peda*
 .gdb*
-get_next_line.h.gch
-*.txt
-empty.txt
-gnltester/
+.vscode
 call_graph*
+
+# test files
+*.txt
+
+# tester
+gnltester/
