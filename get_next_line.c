@@ -13,9 +13,10 @@
 #include "get_next_line.h"
 #include <stddef.h>
 #include <string.h>
+#include <limits.h>
 
 #ifndef BUFFER_SIZE
-# define BUFFER_SIZE 2
+# define BUFFER_SIZE 10000000
 #endif
 
 static char	*get_whole_str_from_read(int fd, char *whole_str)
@@ -71,7 +72,7 @@ static char	*get_one_line(char *whole_str)
 
 static char	*get_next_whole_str(char *whole_str)
 {
-	char	*dst;
+	char	*rest_str;
 	size_t	line_size;
 	char	*nl_index;
 
@@ -82,24 +83,29 @@ static char	*get_next_whole_str(char *whole_str)
 		return (NULL);
 	}
 	line_size = ft_strchr(whole_str, '\0') - nl_index;
-	dst = malloc(sizeof(char) * line_size);
-	if (dst == NULL)
+	rest_str = malloc(sizeof(char) * line_size);
+	if (rest_str == NULL)
 	{
 		free(whole_str);
 		return (NULL);
 	}
-	ft_strlcpy(dst, nl_index + 1, line_size);
+	ft_strlcpy(rest_str, nl_index + 1, line_size);
 	free(whole_str);
-	return (dst);
+	return (rest_str);
 }
 
 // first func's NULL guard is for both malloc fail and READ_ERROR.
 // second func's NULL guard is for malloc fail.
+// third funct does need NULL return.
 char	*get_next_line(int fd)
 {
 	char		*line;
 	static char	*whole_str;
 
+	if (fd < 0 || fd > OPEN_MAX)
+		return (NULL);
+	if (BUFFER_SIZE < 0 || BUFFER_SIZE > SIZE_T_MAX - 1)
+		return (NULL);
 	if (whole_str == NULL)
 		whole_str = ft_strdup("");
 	whole_str = get_whole_str_from_read(fd, whole_str);
@@ -111,9 +117,8 @@ char	*get_next_line(int fd)
 	whole_str = get_next_whole_str(whole_str);
 	return (line);
 }
+
 //
-// //
-// // //
 // //////////////////////////////////////// test function
 // int	main(void)
 // {
