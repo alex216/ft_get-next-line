@@ -15,7 +15,7 @@
 #include <string.h>
 
 #ifndef BUFFER_SIZE
-# define BUFFER_SIZE 1
+# define BUFFER_SIZE 23
 #endif
 
 static char	*get_whole_str_from_read(int fd, char *whole_str)
@@ -48,11 +48,17 @@ static char	*get_whole_str_from_read(int fd, char *whole_str)
 		free(whole_str);
 		return (NULL);
 	}
+
 	if (bytes_read == READ_END)
 	{
-		return(whole_str);
-		// free(whole_str);
-		// return (NULL);
+		if (ft_strlen(whole_str))
+		{
+			return (whole_str);
+		}
+
+		// return(whole_str);
+		free(whole_str);
+		return (NULL);
 	}
 	return (whole_str);
 }
@@ -125,6 +131,9 @@ char	*get_next_line(int fd)
 	return (line);
 }
 
+
+//
+// //
 // //////////////////////////////////////// test function
 // int	main(void)
 // {
@@ -134,9 +143,9 @@ char	*get_next_line(int fd)
 //
 // 	// fd1 = 0;
 // 	// fd1 = open("empty.txt", O_RDONLY);
-// 	fd1 = open("nl.txt", O_RDONLY);
+// 	// fd1 = open("nl.txt", O_RDONLY);
 // 	// fd1 = open("oneline_withno_nl.txt", O_RDONLY);
-// 	// fd1 = open("oneline_with_nl.txt", O_RDONLY);
+// 	fd1 = open("oneline_with_nl.txt", O_RDONLY);
 // 	// fd1 = open("string_nl_string.txt", O_RDONLY);
 // 	// fd1 = open("test.txt", O_RDONLY);
 // 	// fd1 = open("multi.txt", O_RDONLY);
