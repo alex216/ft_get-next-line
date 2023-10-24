@@ -15,7 +15,7 @@
 #include <string.h>
 
 #ifndef BUFFER_SIZE
-# define BUFFER_SIZE 23
+# define BUFFER_SIZE 2
 #endif
 
 static char	*get_whole_str_from_read(int fd, char *whole_str)
@@ -30,7 +30,7 @@ static char	*get_whole_str_from_read(int fd, char *whole_str)
 		free(whole_str);
 		return (NULL);
 	}
-	while (ft_strchr(buf, '\n') == NULL)
+	while (1)
 	{
 		bytes_read = read(fd, buf, BUFFER_SIZE);
 		if (bytes_read == READ_ERROR | bytes_read == READ_END)
@@ -39,10 +39,12 @@ static char	*get_whole_str_from_read(int fd, char *whole_str)
 		tmp_str = ft_strjoin(whole_str, buf);
 		free(whole_str);
 		whole_str = tmp_str;
+		if (ft_strchr(buf, '\n') != NULL)
+			break ;
 	}
 	free(buf);
 	if (bytes_read == READ_ERROR
-		|| (ft_strlen(whole_str) == 0 && bytes_read == READ_END))
+		|| (bytes_read == READ_END && *whole_str == '\0'))
 	{
 		free(whole_str);
 		return (NULL);
@@ -109,9 +111,9 @@ char	*get_next_line(int fd)
 	whole_str = get_next_whole_str(whole_str);
 	return (line);
 }
-
 //
 // //
+// // //
 // //////////////////////////////////////// test function
 // int	main(void)
 // {
