@@ -23,7 +23,6 @@ static char	*get_whole_str_from_read(int fd, char *whole_str)
 {
 	char	*buf;
 	int		bytes_read;
-	char	*tmp_str;
 
 	buf = malloc(sizeof(char) * (BUFFER_SIZE + 1));
 	if (buf == NULL)
@@ -37,9 +36,7 @@ static char	*get_whole_str_from_read(int fd, char *whole_str)
 		if (bytes_read == READ_ERROR | bytes_read == READ_END)
 			break ;
 		buf[bytes_read] = '\0';
-		tmp_str = ft_strjoin(whole_str, buf);
-		free(whole_str);
-		whole_str = tmp_str;
+		whole_str = gnl_join_then_free(whole_str, buf);
 		if (ft_strchr(buf, '\n') != NULL)
 			break ;
 	}

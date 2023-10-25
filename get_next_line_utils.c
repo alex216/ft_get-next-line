@@ -12,10 +12,13 @@
 
 #include "get_next_line.h"
 
+// if str is NULL return 0.
 size_t	ft_strlen(const char *str)
 {
 	size_t	i;
 
+	if (str == NULL)
+		return (0);
 	i = 0;
 	while (*(str + i) != '\0')
 		i++;
@@ -33,12 +36,15 @@ char	*ft_strchr(const char *s, int c)
 	return ((char *)s);
 }
 
+// if dst or src is NULL, return 0.
 size_t	ft_strlcpy(char *dst, const char *src, size_t size)
 {
 	size_t	i;
 	size_t	src_len;
 
 	i = 0;
+	if (dst == NULL || src == NULL)
+		return (0);
 	src_len = ft_strlen(src);
 	if (size == 0)
 		return (src_len);
@@ -51,7 +57,8 @@ size_t	ft_strlcpy(char *dst, const char *src, size_t size)
 	return (src_len);
 }
 
-char	*ft_strjoin(char const *s1, char const *s2)
+// free s1 before return.
+char	*gnl_join_then_free(char const *s1, char const *s2)
 {
 	char	*dst;
 	size_t	s1_len;
@@ -64,14 +71,18 @@ char	*ft_strjoin(char const *s1, char const *s2)
 		return (NULL);
 	ft_strlcpy(dst, s1, s1_len + 1);
 	ft_strlcpy(dst + s1_len, s2, s2_len + 1);
+	free((char *)s1);
 	return (dst);
 }
 
+// if src is NULL, return NULL.
 char	*ft_strdup(const char *src)
 {
 	char	*dst;
 	size_t	length;
 
+	if (src == NULL)
+		return (NULL);
 	length = ft_strlen(src);
 	dst = malloc(sizeof(char) * (length + 1));
 	if (dst == NULL)
