@@ -72,7 +72,10 @@ char	*gnl_join_then_free(char const *s1, char const *s2)
 	s2_len = ft_strlen(s2);
 	dst = malloc(sizeof(char) * (s1_len + s2_len + 1));
 	if (dst == NULL)
+	{
+		free((char *)s1);
 		return (NULL);
+	}
 	ft_strlcpy(dst, s1, s1_len + 1);
 	ft_strlcpy(dst + s1_len, s2, s2_len + 1);
 	free((char *)s1);
@@ -80,17 +83,15 @@ char	*gnl_join_then_free(char const *s1, char const *s2)
 }
 
 // if src is NULL, return NULL.
-char	*ft_strdup(const char *src)
+char	*gnl_strndup(const char *src, size_t n)
 {
 	char	*dst;
-	size_t	length;
 
 	if (src == NULL)
 		return (NULL);
-	length = ft_strlen(src);
-	dst = malloc(sizeof(char) * (length + 1));
+	dst = malloc(sizeof(char) * (n + 1));
 	if (dst == NULL)
 		return (NULL);
-	ft_strlcpy(dst, src, length + 1);
+	ft_strlcpy(dst, src, n + 1);
 	return (dst);
 }

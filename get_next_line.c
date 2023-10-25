@@ -37,6 +37,11 @@ static char	*get_whole_str_from_read(int fd, char *whole_str)
 			break ;
 		buf[bytes_read] = '\0';
 		whole_str = gnl_join_then_free(whole_str, buf);
+		if (whole_str == NULL)
+		{
+			free(buf);
+			return (NULL);
+		}
 		if (ft_strchr(buf, '\n') != NULL)
 			break ;
 	}
@@ -59,16 +64,15 @@ static char	*get_one_line(char *whole_str)
 	nl_index = ft_strchr(whole_str, '\n');
 	if (nl_index == NULL)
 	{
-		line = ft_strdup(whole_str);
+		line = gnl_strndup(whole_str, ft_strlen(whole_str));
 		if (line == NULL)
 			return (NULL);
 		return (line);
 	}
 	line_size = nl_index - whole_str;
-	line = malloc(sizeof(char) * line_size + 2);
+	line = gnl_strndup(whole_str, line_size + 1);
 	if (line == NULL)
 		return (NULL);
-	ft_strlcpy(line, whole_str, line_size + 2);
 	return (line);
 }
 
@@ -85,13 +89,12 @@ static char	*get_next_whole_str(char *whole_str)
 		return (NULL);
 	}
 	line_size = ft_strchr(whole_str, '\0') - nl_index;
-	rest_str = malloc(sizeof(char) * line_size);
+	rest_str = gnl_strndup(nl_index + 1, line_size);
 	if (rest_str == NULL)
 	{
 		free(whole_str);
 		return (NULL);
 	}
-	ft_strlcpy(rest_str, nl_index + 1, line_size);
 	free(whole_str);
 	return (rest_str);
 }
@@ -109,7 +112,7 @@ char	*get_next_line(int fd)
 	if (BUFFER_SIZE < 0 || BUFFER_SIZE > SIZE_T_MAX - 1)
 		return (NULL);
 	if (whole_str == NULL)
-		whole_str = ft_strdup("");
+		whole_str = gnl_strndup("", 0);
 	if (whole_str == NULL)
 		return (NULL);
 	whole_str = get_whole_str_from_read(fd, whole_str);

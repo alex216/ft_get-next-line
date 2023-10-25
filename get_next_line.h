@@ -32,6 +32,6 @@ char		*ft_strchr(const char *s, int c);
 size_t		ft_strlen(const char *str);
 char		*gnl_join_then_free(char const *s1, char const *s2);
 size_t		ft_strlcpy(char *dst, const char *src, size_t size);
-char		*ft_strdup(const char *src);
+char		*gnl_strndup(const char *src,size_t n);
 
 #endif
