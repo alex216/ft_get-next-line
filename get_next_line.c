@@ -28,6 +28,7 @@ static char	*get_whole_str_from_read(int fd, char *whole_str)
 	if (buf == NULL)
 	{
 		free(whole_str);
+		whole_str = NULL;
 		return (NULL);
 	}
 	while (1)
@@ -50,6 +51,7 @@ static char	*get_whole_str_from_read(int fd, char *whole_str)
 		|| (bytes_read == READ_END && *whole_str == '\0'))
 	{
 		free(whole_str);
+		whole_str = NULL;
 		return (NULL);
 	}
 	return (whole_str);
@@ -86,6 +88,7 @@ static char	*get_next_whole_str(char *whole_str)
 	if (nl_index == NULL)
 	{
 		free(whole_str);
+		whole_str = NULL;
 		return (NULL);
 	}
 	line_size = ft_strchr(whole_str, '\0') - nl_index;
@@ -93,9 +96,11 @@ static char	*get_next_whole_str(char *whole_str)
 	if (rest_str == NULL)
 	{
 		free(whole_str);
+		whole_str = NULL;
 		return (NULL);
 	}
 	free(whole_str);
+	whole_str = NULL;
 	return (rest_str);
 }
 
@@ -129,7 +134,6 @@ char	*get_next_line(int fd)
 // {
 // 	system("leaks -q a.out");
 // }
-
 
 // //////////////////////////////////////// test function
 // int	main(void)
