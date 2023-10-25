@@ -58,7 +58,12 @@ static char	*get_one_line(char *whole_str)
 
 	nl_index = ft_strchr(whole_str, '\n');
 	if (nl_index == NULL)
-		return (ft_strdup(whole_str));
+	{
+		line = ft_strdup(whole_str);
+		if (line == NULL)
+			return (NULL);
+		return (line);
+	}
 	line_size = nl_index - whole_str;
 	line = malloc(sizeof(char) * line_size + 2);
 	if (line == NULL)
@@ -105,6 +110,8 @@ char	*get_next_line(int fd)
 		return (NULL);
 	if (whole_str == NULL)
 		whole_str = ft_strdup("");
+	if (whole_str == NULL)
+		return (NULL);
 	whole_str = get_whole_str_from_read(fd, whole_str);
 	if (whole_str == NULL)
 		return (NULL);
@@ -115,7 +122,12 @@ char	*get_next_line(int fd)
 	return (line);
 }
 
-//
+// __attribute__ ((destructor)) static void destructor()
+// {
+// 	system("leaks -q a.out");
+// }
+
+
 // //////////////////////////////////////// test function
 // int	main(void)
 // {
@@ -126,8 +138,8 @@ char	*get_next_line(int fd)
 // 	// fd1 = 0;
 // 	// fd1 = open("empty.txt", O_RDONLY);
 // 	// fd1 = open("nl.txt", O_RDONLY);
-// 	// fd1 = open("oneline_withno_nl.txt", O_RDONLY);
-// 	fd1 = open("oneline_with_nl.txt", O_RDONLY);
+// 	fd1 = open("oneline_withno_nl.txt", O_RDONLY);
+// 	// fd1 = open("oneline_with_nl.txt", O_RDONLY);
 // 	// fd1 = open("string_nl_string.txt", O_RDONLY);
 // 	// fd1 = open("test.txt", O_RDONLY);
 // 	// fd1 = open("multi.txt", O_RDONLY);
@@ -145,7 +157,7 @@ char	*get_next_line(int fd)
 // 		if (result == NULL)
 // 			printf("###%d is###:(null) by first errno is %d\n", i, ENOMEM);
 // 		else
-// 			printf("###%d is###:%s\n", i, result);
+// 			printf("###%d is###:%s", i, result);
 // 		free(result);
 // 		i++;
 // 	}

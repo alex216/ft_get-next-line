@@ -26,7 +26,7 @@ enum e_read_return_value {
     READ_END    = 0
 };
 
-int			main(void);
+// int			main(void);
 char		*get_next_line(int fd);
 char		*ft_strchr(const char *s, int c);
 size_t		ft_strlen(const char *str);

@@ -27,6 +27,8 @@ size_t	ft_strlen(const char *str)
 
 char	*ft_strchr(const char *s, int c)
 {
+	if (s == NULL)
+		return (NULL);
 	while (*s != (char)c)
 	{
 		if (*s == '\0')
@@ -64,6 +66,8 @@ char	*gnl_join_then_free(char const *s1, char const *s2)
 	size_t	s1_len;
 	size_t	s2_len;
 
+	if (s1 == NULL || s2 == NULL)
+		return (NULL);
 	s1_len = ft_strlen(s1);
 	s2_len = ft_strlen(s2);
 	dst = malloc(sizeof(char) * (s1_len + s2_len + 1));
