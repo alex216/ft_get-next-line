@@ -6,7 +6,7 @@
 /*   By: yliu <yliu@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/06 09:58:34 by yliu              #+#    #+#             */
-/*   Updated: 2023/10/26 16:59:38 by yliu             ###   ########.fr       */
+/*   Updated: 2023/10/26 17:15:22 by yliu             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,6 +19,13 @@
 # define BUFFER_SIZE 10000000
 #endif
 
+static void	*free_then_put_null(char *pointer)
+{
+	free(pointer);
+	pointer = NULL;
+	return (NULL);
+}
+
 static char	*get_whole_str_from_read(int fd, char *whole_str)
 {
 	char	*buf;
@@ -26,33 +33,22 @@ static char	*get_whole_str_from_read(int fd, char *whole_str)
 
 	buf = malloc(sizeof(char) * (BUFFER_SIZE + 1));
 	if (buf == NULL)
-	{
-		free(whole_str);
-		whole_str = NULL;
-		return (NULL);
-	}
+		return (free_then_put_null(whole_str));
 	while (1)
 	{
 		bytes_read = read(fd, buf, BUFFER_SIZE);
-		if (bytes_read == READ_ERROR | bytes_read == READ_END)
+		if (bytes_read == READ_END || bytes_read == READ_ERROR)
 			break ;
 		buf[bytes_read] = '\0';
 		whole_str = gnl_join_then_free(whole_str, buf);
 		if (whole_str == NULL)
-		{
-			free(buf);
-			return (NULL);
-		}
+			return (free(buf), NULL);
 		if (ft_strchr(buf, '\n') != NULL)
 			break ;
 	}
 	free(buf);
 	if (bytes_read == READ_ERROR)
-	{
-		free(whole_str);
-		whole_str = NULL;
-		return (NULL);
-	}
+		return (free_then_put_null(whole_str));
 	return (whole_str);
 }
 
