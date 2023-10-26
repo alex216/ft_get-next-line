@@ -6,7 +6,7 @@
 /*   By: yliu <yliu@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/06 09:58:34 by yliu              #+#    #+#             */
-/*   Updated: 2023/10/23 23:29:46 by yliu             ###   ########.fr       */
+/*   Updated: 2023/10/26 15:36:47 by yliu             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,7 +48,7 @@ static char	*get_whole_str_from_read(int fd, char *whole_str)
 	}
 	free(buf);
 	if (bytes_read == READ_ERROR
-		|| (bytes_read == READ_END && *whole_str == '\0'))
+		|| (bytes_read == READ_END && whole_str == NULL))
 	{
 		free(whole_str);
 		whole_str = NULL;
@@ -65,16 +65,16 @@ static char	*get_one_line(char *whole_str)
 
 	nl_index = ft_strchr(whole_str, '\n');
 	if (nl_index == NULL)
-	{
-		line = gnl_strndup(whole_str, ft_strlen(whole_str));
-		if (line == NULL)
-			return (NULL);
-		return (line);
-	}
-	line_size = nl_index - whole_str;
-	line = gnl_strndup(whole_str, line_size + 1);
+		line_size = ft_strlen(whole_str);
+	else
+		line_size = nl_index - whole_str + 1;
+	line = gnl_strndup(whole_str, line_size);
 	if (line == NULL)
+	{
+		free(whole_str);
+		whole_str = NULL;
 		return (NULL);
+	}
 	return (line);
 }
 
@@ -85,7 +85,7 @@ static char	*get_next_whole_str(char *whole_str)
 	char	*nl_index;
 
 	nl_index = ft_strchr(whole_str, '\n');
-	if (nl_index == NULL)
+	if (nl_index == NULL || (nl_index != NULL && *(nl_index + 1) == '\0'))
 	{
 		free(whole_str);
 		whole_str = NULL;
@@ -116,10 +116,6 @@ char	*get_next_line(int fd)
 		return (NULL);
 	if (BUFFER_SIZE < 0 || BUFFER_SIZE > SIZE_T_MAX - 1)
 		return (NULL);
-	if (whole_str == NULL)
-		whole_str = gnl_strndup("", 0);
-	if (whole_str == NULL)
-		return (NULL);
 	whole_str = get_whole_str_from_read(fd, whole_str);
 	if (whole_str == NULL)
 		return (NULL);
@@ -134,7 +130,7 @@ char	*get_next_line(int fd)
 // {
 // 	system("leaks -q a.out");
 // }
-
+//
 // //////////////////////////////////////// test function
 // int	main(void)
 // {
@@ -145,11 +141,11 @@ char	*get_next_line(int fd)
 // 	// fd1 = 0;
 // 	// fd1 = open("empty.txt", O_RDONLY);
 // 	// fd1 = open("nl.txt", O_RDONLY);
-// 	fd1 = open("oneline_withno_nl.txt", O_RDONLY);
+// 	// fd1 = open("oneline_withno_nl.txt", O_RDONLY);
 // 	// fd1 = open("oneline_with_nl.txt", O_RDONLY);
 // 	// fd1 = open("string_nl_string.txt", O_RDONLY);
 // 	// fd1 = open("test.txt", O_RDONLY);
-// 	// fd1 = open("multi.txt", O_RDONLY);
+// 	fd1 = open("multi.txt", O_RDONLY);
 //
 // 	if (fd1 == -1)
 // 	{

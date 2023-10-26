@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   get_next_line_utils.c                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yliu <yliu@student.42.jp>                  +#+  +:+       +#+        */
+/*   By: yliu <yliu@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/10/26 00:07:26 by yliu              #+#    #+#             */
-/*   Updated: 2023/10/26 15:18:42 by yliu             ###   ########.fr       */
+/*   Created: 2023/10/09 17:03:08 by yliu              #+#    #+#             */
+/*   Updated: 2023/10/13 11:04:55 by yliu             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,25 +60,16 @@ size_t	ft_strlcpy(char *dst, const char *src, size_t size)
 }
 
 // free s1 before return.
-// s1 is a pointer must allocating somewhere.
-// s2:NULL is impossible.
 char	*gnl_join_then_free(char const *s1, char const *s2)
 {
 	char	*dst;
 	size_t	s1_len;
 	size_t	s2_len;
 
+	if (s1 == NULL || s2 == NULL)
+		return (NULL);
 	s1_len = ft_strlen(s1);
 	s2_len = ft_strlen(s2);
-	if (s1 == NULL && s2 == NULL)
-		return (NULL);
-	if (s1 == NULL)
-	{
-		dst = gnl_strndup(s2, ft_strlen(s2));
-		return (dst);
-	}
-	if (s2 == NULL)
-		return ((char *)s1);
 	dst = malloc(sizeof(char) * (s1_len + s2_len + 1));
 	if (dst == NULL)
 	{
