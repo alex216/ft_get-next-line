@@ -6,7 +6,7 @@
 /*   By: yliu <yliu@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/06 09:58:34 by yliu              #+#    #+#             */
-/*   Updated: 2023/10/26 15:36:47 by yliu             ###   ########.fr       */
+/*   Updated: 2023/10/26 16:59:38 by yliu             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,8 +47,7 @@ static char	*get_whole_str_from_read(int fd, char *whole_str)
 			break ;
 	}
 	free(buf);
-	if (bytes_read == READ_ERROR
-		|| (bytes_read == READ_END && whole_str == NULL))
+	if (bytes_read == READ_ERROR)
 	{
 		free(whole_str);
 		whole_str = NULL;
