@@ -6,7 +6,7 @@
 /*   By: yliu <yliu@student.42.jp>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/26 00:07:26 by yliu              #+#    #+#             */
-/*   Updated: 2023/10/26 17:23:33 by yliu             ###   ########.fr       */
+/*   Updated: 2023/10/26 19:18:42 by yliu             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,32 +64,32 @@ size_t	ft_strlcpy(char *dst, const char *src, size_t size)
 // s1 is a pointer must allocating somewhere.
 // s2:NULL is impossible due to READ_ERROR is
 // considered. however, it returns s1.
-char	*gnl_join_then_free(char const *s1, char const *s2)
+char	*gnl_join_then_free(char **s1, char const *s2)
 {
 	char	*dst;
 	size_t	s1_len;
 	size_t	s2_len;
 
-	s1_len = ft_strlen(s1);
+	s1_len = ft_strlen(*s1);
 	s2_len = ft_strlen(s2);
-	if (s1 == NULL && s2 == NULL)
+	if (s1 == NULL || (*s1 == NULL && s2 == NULL))
 		return (NULL);
-	if (s1 == NULL)
+	if (*s1 == NULL)
 	{
 		dst = gnl_strndup(s2, ft_strlen(s2));
 		return (dst);
 	}
 	if (s2 == NULL)
-		return ((char *)s1);
+		return (*s1);
 	dst = malloc(sizeof(char) * (s1_len + s2_len + 1));
 	if (dst == NULL)
 	{
 		free((char *)s1);
 		return (NULL);
 	}
-	ft_strlcpy(dst, s1, s1_len + 1);
+	ft_strlcpy(dst, *s1, s1_len + 1);
 	ft_strlcpy(dst + s1_len, s2, s2_len + 1);
-	free((char *)s1);
+	free(*s1);
 	return (dst);
 }
 

@@ -6,7 +6,7 @@
 /*   By: yliu <yliu@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/09 17:03:31 by yliu              #+#    #+#             */
-/*   Updated: 2023/10/13 18:08:01 by yliu             ###   ########.fr       */
+/*   Updated: 2023/10/26 17:56:53 by yliu             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,7 +30,7 @@ enum	e_read_return_value
 char	*get_next_line(int fd);
 char	*ft_strchr(const char *s, int c);
 size_t	ft_strlen(const char *str);
-char	*gnl_join_then_free(char const *s1, char const *s2);
+char	*gnl_join_then_free(char **s1, char const *s2);
 size_t	ft_strlcpy(char *dst, const char *src, size_t size);
 char	*gnl_strndup(const char *src, size_t n);
 

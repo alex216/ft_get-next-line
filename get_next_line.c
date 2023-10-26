@@ -6,7 +6,7 @@
 /*   By: yliu <yliu@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/06 09:58:34 by yliu              #+#    #+#             */
-/*   Updated: 2023/10/26 17:33:06 by yliu             ###   ########.fr       */
+/*   Updated: 2023/10/26 19:55:01 by yliu             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,10 +19,10 @@
 # define BUFFER_SIZE 10000000
 #endif
 
-static void	*free_then_put_null(char *pointer)
+static void	*free_then_put_null(char **pointer)
 {
-	free(pointer);
-	pointer = NULL;
+	free(*pointer);
+	*pointer = NULL;
 	return (NULL);
 }
 
@@ -36,14 +36,14 @@ static char	*get_whole_str_from_read(int fd, char *whole_str)
 
 	buf = malloc(sizeof(char) * (BUFFER_SIZE + 1));
 	if (buf == NULL)
-		return (free_then_put_null(whole_str));
+		return (free_then_put_null(&whole_str));
 	while (1)
 	{
 		bytes_read = read(fd, buf, BUFFER_SIZE);
 		if (bytes_read == READ_END || bytes_read == READ_ERROR)
 			break ;
 		buf[bytes_read] = '\0';
-		whole_str = gnl_join_then_free(whole_str, buf);
+		whole_str = gnl_join_then_free(&whole_str, buf);
 		if (whole_str == NULL)
 			return (free(buf), NULL);
 		if (ft_strchr(buf, '\n') != NULL)
@@ -51,45 +51,8 @@ static char	*get_whole_str_from_read(int fd, char *whole_str)
 	}
 	free(buf);
 	if (bytes_read == READ_ERROR)
-		return (free_then_put_null(whole_str));
+		return (free_then_put_null(&whole_str));
 	return (whole_str);
-}
-
-// if error occurs, free whole_str then return NULL.
-static char	*get_one_line(char *whole_str)
-{
-	char	*line;
-	size_t	line_size;
-	char	*nl_index;
-
-	nl_index = ft_strchr(whole_str, '\n');
-	if (nl_index == NULL)
-		line_size = ft_strlen(whole_str);
-	else
-		line_size = nl_index - whole_str + 1;
-	line = gnl_strndup(whole_str, line_size);
-	if (line == NULL)
-		return (free_then_put_null(whole_str));
-	return (line);
-}
-
-// free whole_str in any case.
-static char	*get_next_whole_str(char *whole_str)
-{
-	char	*rest_str;
-	size_t	line_size;
-	char	*nl_index;
-
-	nl_index = ft_strchr(whole_str, '\n');
-	if (nl_index == NULL || (nl_index != NULL && *(nl_index + 1) == '\0'))
-		return (free_then_put_null(whole_str));
-	line_size = ft_strchr(whole_str, '\0') - nl_index;
-	rest_str = gnl_strndup(nl_index + 1, line_size);
-	if (rest_str == NULL)
-		return (free_then_put_null(whole_str));
-	free(whole_str);
-	whole_str = NULL;
-	return (rest_str);
 }
 
 // first func's NULL guard is for both malloc fail and READ_ERROR.
@@ -99,6 +62,9 @@ char	*get_next_line(int fd)
 {
 	char		*line;
 	static char	*whole_str;
+	char	*nl_pos;
+	size_t	line_size;
+	char	*rest_str;
 
 	if (fd < 0 || fd > OPEN_MAX)
 		return (NULL);
@@ -107,10 +73,29 @@ char	*get_next_line(int fd)
 	whole_str = get_whole_str_from_read(fd, whole_str);
 	if (whole_str == NULL)
 		return (NULL);
-	line = get_one_line(whole_str);
+	// line = get_one_line(whole_str);
+	nl_pos = ft_strchr(whole_str, '\n');
+	if (nl_pos == NULL)
+		line_size = ft_strlen(whole_str);
+	else
+		line_size = nl_pos - whole_str + 1;
+	line = gnl_strndup(whole_str, line_size);
 	if (line == NULL)
-		return (NULL);
-	whole_str = get_next_whole_str(whole_str);
+		return (free_then_put_null(&whole_str));
+	// whole_str = get_next_whole_str(whole_str);
+	if (nl_pos == NULL || (nl_pos != NULL && *(nl_pos + 1) == '\0'))
+	{
+		free_then_put_null(&whole_str);
+		return (line);
+	}
+	rest_str = gnl_strndup(nl_pos + 1, whole_str + ft_strlen(whole_str) - nl_pos);
+	if (rest_str == NULL)
+	{
+		free_then_put_null(&whole_str);
+		return (line);
+	}
+	free(whole_str);
+	whole_str = rest_str;
 	return (line);
 }
 
@@ -119,7 +104,7 @@ char	*get_next_line(int fd)
 // 	system("leaks -q a.out");
 // }
 //
-// //////////////////////////////////////// test function
+//////////////////////////////////////// test function
 // int	main(void)
 // {
 // 	int		fd1;
@@ -130,10 +115,10 @@ char	*get_next_line(int fd)
 // 	// fd1 = open("empty.txt", O_RDONLY);
 // 	// fd1 = open("nl.txt", O_RDONLY);
 // 	// fd1 = open("oneline_withno_nl.txt", O_RDONLY);
-// 	// fd1 = open("oneline_with_nl.txt", O_RDONLY);
+// 	fd1 = open("oneline_with_nl.txt", O_RDONLY);
 // 	// fd1 = open("string_nl_string.txt", O_RDONLY);
 // 	// fd1 = open("test.txt", O_RDONLY);
-// 	fd1 = open("multi.txt", O_RDONLY);
+// 	// fd1 = open("multi.txt", O_RDONLY);
 //
 // 	if (fd1 == -1)
 // 	{
