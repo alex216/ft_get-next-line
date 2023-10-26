@@ -6,14 +6,14 @@
 /*   By: yliu <yliu@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/06 09:58:34 by yliu              #+#    #+#             */
-/*   Updated: 2023/10/26 17:15:22 by yliu             ###   ########.fr       */
+/*   Updated: 2023/10/26 17:31:42 by yliu             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "get_next_line.h"
+#include <limits.h>
 #include <stddef.h>
 #include <string.h>
-#include <limits.h>
 
 #ifndef BUFFER_SIZE
 # define BUFFER_SIZE 10000000
@@ -26,6 +26,9 @@ static void	*free_then_put_null(char *pointer)
 	return (NULL);
 }
 
+// if error, free whole_str in any case then return NULL.
+// if input whole_str is NULL and READ happens to be last,
+// return NULL.
 static char	*get_whole_str_from_read(int fd, char *whole_str)
 {
 	char	*buf;
@@ -52,6 +55,7 @@ static char	*get_whole_str_from_read(int fd, char *whole_str)
 	return (whole_str);
 }
 
+// if error occurs, free whole_str then return NULL.
 static char	*get_one_line(char *whole_str)
 {
 	char	*line;
@@ -65,14 +69,11 @@ static char	*get_one_line(char *whole_str)
 		line_size = nl_index - whole_str + 1;
 	line = gnl_strndup(whole_str, line_size);
 	if (line == NULL)
-	{
-		free(whole_str);
-		whole_str = NULL;
-		return (NULL);
-	}
+		return(free_then_put_null(whole_str));
 	return (line);
 }
 
+// free whole_str in any case.
 static char	*get_next_whole_str(char *whole_str)
 {
 	char	*rest_str;
@@ -81,19 +82,11 @@ static char	*get_next_whole_str(char *whole_str)
 
 	nl_index = ft_strchr(whole_str, '\n');
 	if (nl_index == NULL || (nl_index != NULL && *(nl_index + 1) == '\0'))
-	{
-		free(whole_str);
-		whole_str = NULL;
-		return (NULL);
-	}
+		return(free_then_put_null(whole_str));
 	line_size = ft_strchr(whole_str, '\0') - nl_index;
 	rest_str = gnl_strndup(nl_index + 1, line_size);
 	if (rest_str == NULL)
-	{
-		free(whole_str);
-		whole_str = NULL;
-		return (NULL);
-	}
+		return(free_then_put_null(whole_str));
 	free(whole_str);
 	whole_str = NULL;
 	return (rest_str);

@@ -6,7 +6,7 @@
 /*   By: yliu <yliu@student.42.jp>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/26 00:07:26 by yliu              #+#    #+#             */
-/*   Updated: 2023/10/26 15:18:42 by yliu             ###   ########.fr       */
+/*   Updated: 2023/10/26 17:23:33 by yliu             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,6 +25,7 @@ size_t	ft_strlen(const char *str)
 	return (i);
 }
 
+// original libft
 char	*ft_strchr(const char *s, int c)
 {
 	if (s == NULL)
@@ -61,7 +62,8 @@ size_t	ft_strlcpy(char *dst, const char *src, size_t size)
 
 // free s1 before return.
 // s1 is a pointer must allocating somewhere.
-// s2:NULL is impossible.
+// s2:NULL is impossible due to READ_ERROR is
+// considered. however, it returns s1.
 char	*gnl_join_then_free(char const *s1, char const *s2)
 {
 	char	*dst;
