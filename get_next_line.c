@@ -6,7 +6,7 @@
 /*   By: yliu <yliu@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/06 09:58:34 by yliu              #+#    #+#             */
-/*   Updated: 2023/10/26 19:55:01 by yliu             ###   ########.fr       */
+/*   Updated: 2023/10/26 22:49:29 by yliu             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,18 +62,16 @@ char	*get_next_line(int fd)
 {
 	char		*line;
 	static char	*whole_str;
-	char	*nl_pos;
-	size_t	line_size;
-	char	*rest_str;
+	char		*nl_pos;
+	size_t		line_size;
+	char		*rest_str;
 
-	if (fd < 0 || fd > OPEN_MAX)
-		return (NULL);
-	if (BUFFER_SIZE < 0 || BUFFER_SIZE > SIZE_T_MAX - 1)
+	if (fd < 0 || fd > OPEN_MAX || BUFFER_SIZE < 0
+		|| BUFFER_SIZE > SIZE_T_MAX - 1)
 		return (NULL);
 	whole_str = get_whole_str_from_read(fd, whole_str);
 	if (whole_str == NULL)
 		return (NULL);
-	// line = get_one_line(whole_str);
 	nl_pos = ft_strchr(whole_str, '\n');
 	if (nl_pos == NULL)
 		line_size = ft_strlen(whole_str);
@@ -82,7 +80,6 @@ char	*get_next_line(int fd)
 	line = gnl_strndup(whole_str, line_size);
 	if (line == NULL)
 		return (free_then_put_null(&whole_str));
-	// whole_str = get_next_whole_str(whole_str);
 	if (nl_pos == NULL || (nl_pos != NULL && *(nl_pos + 1) == '\0'))
 	{
 		free_then_put_null(&whole_str);
