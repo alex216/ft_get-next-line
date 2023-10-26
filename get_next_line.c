@@ -6,7 +6,7 @@
 /*   By: yliu <yliu@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/06 09:58:34 by yliu              #+#    #+#             */
-/*   Updated: 2023/10/26 17:31:42 by yliu             ###   ########.fr       */
+/*   Updated: 2023/10/26 17:33:06 by yliu             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,7 +69,7 @@ static char	*get_one_line(char *whole_str)
 		line_size = nl_index - whole_str + 1;
 	line = gnl_strndup(whole_str, line_size);
 	if (line == NULL)
-		return(free_then_put_null(whole_str));
+		return (free_then_put_null(whole_str));
 	return (line);
 }
 
@@ -82,11 +82,11 @@ static char	*get_next_whole_str(char *whole_str)
 
 	nl_index = ft_strchr(whole_str, '\n');
 	if (nl_index == NULL || (nl_index != NULL && *(nl_index + 1) == '\0'))
-		return(free_then_put_null(whole_str));
+		return (free_then_put_null(whole_str));
 	line_size = ft_strchr(whole_str, '\0') - nl_index;
 	rest_str = gnl_strndup(nl_index + 1, line_size);
 	if (rest_str == NULL)
-		return(free_then_put_null(whole_str));
+		return (free_then_put_null(whole_str));
 	free(whole_str);
 	whole_str = NULL;
 	return (rest_str);
