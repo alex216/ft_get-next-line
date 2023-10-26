@@ -6,7 +6,7 @@
 /*   By: yliu <yliu@student.42.jp>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/26 00:07:26 by yliu              #+#    #+#             */
-/*   Updated: 2023/10/26 19:18:42 by yliu             ###   ########.fr       */
+/*   Updated: 2023/10/26 19:57:10 by yliu             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -84,7 +84,7 @@ char	*gnl_join_then_free(char **s1, char const *s2)
 	dst = malloc(sizeof(char) * (s1_len + s2_len + 1));
 	if (dst == NULL)
 	{
-		free((char *)s1);
+		free(*s1);
 		return (NULL);
 	}
 	ft_strlcpy(dst, *s1, s1_len + 1);
