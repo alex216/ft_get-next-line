@@ -6,7 +6,7 @@
 /*   By: yliu <yliu@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/06 09:58:34 by yliu              #+#    #+#             */
-/*   Updated: 2023/10/27 21:43:39 by yliu             ###   ########.fr       */
+/*   Updated: 2023/10/27 23:46:09 by yliu             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,8 +27,7 @@ static void	*free_then_put_null(char **pointer)
 }
 
 // if error, free whole_str in any case then return NULL.
-// if input whole_str is NULL and READ happens to be last,
-// return NULL.
+// break rule of while is, either READEND or READERROR or \n
 static char	*get_whole_str_from_read(int fd, char **whole_str)
 {
 	char		*buf;
@@ -55,15 +54,28 @@ static char	*get_whole_str_from_read(int fd, char **whole_str)
 	return (*whole_str);
 }
 
+static char	*get_one_line(char **whole_str, char *nl_pos)
+{
+	size_t		line_size;
+	char		*line;
+
+	if (nl_pos == NULL)
+		line_size = ft_strlen(*whole_str);
+	else
+		line_size = nl_pos - *whole_str + 1;
+	line = gnl_strndup(*whole_str, line_size);
+	if (line == NULL)
+		return (free_then_put_null(whole_str));
+	return (line);
+}
+
 // first func's NULL guard is for both malloc fail and READ_ERROR.
-// second func's NULL guard is for malloc fail.
-// third funct does need NULL return.
+// second and third func's NULL guard is for malloc fail.
 char	*get_next_line(int fd)
 {
 	char		*line;
 	static char	*whole_str;
 	char		*nl_pos;
-	size_t		line_size;
 	char		*rest_str;
 
 	if (fd < 0 || fd > OPEN_MAX || BUFFER_SIZE < 0
@@ -73,24 +85,15 @@ char	*get_next_line(int fd)
 	if (whole_str == NULL)
 		return (NULL);
 	nl_pos = ft_strchr(whole_str, '\n');
-	if (nl_pos == NULL)
-		line_size = ft_strlen(whole_str);
-	else
-		line_size = nl_pos - whole_str + 1;
-	line = gnl_strndup(whole_str, line_size);
+	line = get_one_line(&whole_str, nl_pos);
 	if (line == NULL)
-		return (free_then_put_null(&whole_str));
+		return (NULL);
 	if (nl_pos == NULL || (nl_pos != NULL && *(nl_pos + 1) == '\0'))
-	{
-		free_then_put_null(&whole_str);
-		return (line);
-	}
-	rest_str = gnl_strndup(nl_pos + 1, whole_str + ft_strlen(whole_str) - nl_pos);
+		return (free_then_put_null(&whole_str), line);
+	rest_str = gnl_strndup(nl_pos + 1,
+			whole_str + ft_strlen(whole_str) - nl_pos);
 	if (rest_str == NULL)
-	{
-		free_then_put_null(&whole_str);
-		return (line);
-	}
+		return (free_then_put_null(&whole_str), line);
 	free(whole_str);
 	whole_str = rest_str;
 	return (line);
