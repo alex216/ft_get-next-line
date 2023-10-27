@@ -6,7 +6,7 @@
 /*   By: yliu <yliu@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/06 09:58:34 by yliu              #+#    #+#             */
-/*   Updated: 2023/10/26 22:49:29 by yliu             ###   ########.fr       */
+/*   Updated: 2023/10/27 21:43:39 by yliu             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,21 +29,21 @@ static void	*free_then_put_null(char **pointer)
 // if error, free whole_str in any case then return NULL.
 // if input whole_str is NULL and READ happens to be last,
 // return NULL.
-static char	*get_whole_str_from_read(int fd, char *whole_str)
+static char	*get_whole_str_from_read(int fd, char **whole_str)
 {
-	char	*buf;
-	int		bytes_read;
+	char		*buf;
+	ssize_t		bytes_read;
 
 	buf = malloc(sizeof(char) * (BUFFER_SIZE + 1));
 	if (buf == NULL)
-		return (free_then_put_null(&whole_str));
+		return (free_then_put_null(whole_str));
 	while (1)
 	{
 		bytes_read = read(fd, buf, BUFFER_SIZE);
 		if (bytes_read == READ_END || bytes_read == READ_ERROR)
 			break ;
 		buf[bytes_read] = '\0';
-		whole_str = gnl_join_then_free(&whole_str, buf);
+		*whole_str = gnl_join_then_free(whole_str, buf);
 		if (whole_str == NULL)
 			return (free(buf), NULL);
 		if (ft_strchr(buf, '\n') != NULL)
@@ -51,8 +51,8 @@ static char	*get_whole_str_from_read(int fd, char *whole_str)
 	}
 	free(buf);
 	if (bytes_read == READ_ERROR)
-		return (free_then_put_null(&whole_str));
-	return (whole_str);
+		return (free_then_put_null(whole_str));
+	return (*whole_str);
 }
 
 // first func's NULL guard is for both malloc fail and READ_ERROR.
@@ -69,7 +69,7 @@ char	*get_next_line(int fd)
 	if (fd < 0 || fd > OPEN_MAX || BUFFER_SIZE < 0
 		|| BUFFER_SIZE > SIZE_T_MAX - 1)
 		return (NULL);
-	whole_str = get_whole_str_from_read(fd, whole_str);
+	whole_str = get_whole_str_from_read(fd, &whole_str);
 	if (whole_str == NULL)
 		return (NULL);
 	nl_pos = ft_strchr(whole_str, '\n');
