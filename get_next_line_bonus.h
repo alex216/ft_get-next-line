@@ -6,7 +6,7 @@
 /*   By: yliu <yliu@student.42.jp>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/28 10:55:52 by yliu              #+#    #+#             */
-/*   Updated: 2023/10/28 10:57:00 by yliu             ###   ########.fr       */
+/*   Updated: 2023/10/28 11:54:51 by yliu             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,6 +29,12 @@ enum	e_read_return_value
 {
 	READ_ERROR = -1,
 	READ_END = 0
+};
+
+enum	e_return_value
+{
+	FAILURE = 0,
+	SUCCESS = 1
 };
 
 char	*get_next_line(int fd);

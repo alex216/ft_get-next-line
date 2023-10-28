@@ -6,7 +6,7 @@
 /*   By: yliu <yliu@student.42.jp>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/28 10:53:18 by yliu              #+#    #+#             */
-/*   Updated: 2023/10/28 11:15:02 by yliu             ###   ########.fr       */
+/*   Updated: 2023/10/28 11:56:55 by yliu             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,14 +21,14 @@ static void	*free_then_put_null(char **pointer)
 
 // if error, free whole_str in any case then return NULL.
 // break rule of while is, either READEND or READERROR or \n
-static char	*get_whole_str_from_read(int fd, char **whole_str)
+static size_t	get_whole_str_from_read(int fd, char **whole_str)
 {
 	char		*buf;
 	ssize_t		bytes_read;
 
 	buf = malloc(sizeof(char) * (BUFFER_SIZE + 1));
 	if (buf == NULL)
-		return (free_then_put_null(whole_str));
+		return (free_then_put_null(whole_str), FAILURE);
 	while (1)
 	{
 		bytes_read = read(fd, buf, BUFFER_SIZE);
@@ -39,15 +39,15 @@ static char	*get_whole_str_from_read(int fd, char **whole_str)
 		if (whole_str == NULL)
 		{
 			free(buf);
-			return (NULL);
+			return (FAILURE);
 		}
 		if (gnl_strchr(buf, '\n') != NULL)
 			break ;
 	}
 	free(buf);
 	if (bytes_read == READ_ERROR)
-		return (free_then_put_null(whole_str));
-	return (*whole_str);
+		return (free_then_put_null(whole_str), FAILURE);
+	return (SUCCESS);
 }
 
 static char	*get_one_line(char **whole_str, char *nl_pos)
@@ -76,8 +76,7 @@ char	*get_next_line(int fd)
 	nl_p = gnl_strchr(whole_str[fd], '\n');
 	if (nl_p == NULL)
 	{
-		whole_str[fd] = get_whole_str_from_read(fd, &whole_str[fd]);
-		if (whole_str[fd] == NULL)
+		if (get_whole_str_from_read(fd, &whole_str[fd]) == FAILURE)
 			return (NULL);
 		nl_p = gnl_strchr(whole_str[fd], '\n');
 	}
