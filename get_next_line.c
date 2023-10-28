@@ -6,7 +6,7 @@
 /*   By: yliu <yliu@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/06 09:58:34 by yliu              #+#    #+#             */
-/*   Updated: 2023/10/28 09:41:43 by yliu             ###   ########.fr       */
+/*   Updated: 2023/10/28 10:34:56 by yliu             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -74,22 +74,24 @@ char	*get_next_line(int fd)
 {
 	char		*line;
 	static char	*whole_str;
-	char		*nl_pos;
+	char		*nl_p;
 	char		*rest_str;
 
 	if (fd < 0 || fd > OPEN_MAX || BUFFER_SIZE < 0
 		|| BUFFER_SIZE > SIZE_T_MAX - 1)
 		return (NULL);
-	whole_str = get_whole_str_from_read(fd, &whole_str);
-	if (whole_str == NULL)
-		return (NULL);
-	nl_pos = ft_strchr(whole_str, '\n');
-	line = get_one_line(&whole_str, nl_pos);
-	if (line == NULL)
-		return (free_then_put_null(&whole_str), NULL);
-	if (nl_pos == NULL || (nl_pos != NULL && *(nl_pos + 1) == '\0'))
+	nl_p = ft_strchr(whole_str, '\n');
+	if (nl_p == NULL)
+	{
+		whole_str = get_whole_str_from_read(fd, &whole_str);
+		if (whole_str == NULL)
+			return (NULL);
+		nl_p = ft_strchr(whole_str, '\n');
+	}
+	line = get_one_line(&whole_str, nl_p);
+	if (line == NULL || nl_p == NULL || (nl_p != NULL && *(nl_p + 1) == '\0'))
 		return (free_then_put_null(&whole_str), line);
-	rest_str = gnl_strndup(nl_pos + 1, ft_strlen(nl_pos + 1));
+	rest_str = gnl_strndup(nl_p + 1, ft_strlen(nl_p + 1));
 	if (rest_str == NULL)
 		return (free_then_put_null(&whole_str), line);
 	free(whole_str);
