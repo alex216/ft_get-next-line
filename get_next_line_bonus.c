@@ -1,16 +1,16 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   get_next_line.c                                    :+:      :+:    :+:   */
+/*   get_next_line_bonus.c                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yliu <yliu@student.42.fr>                  +#+  +:+       +#+        */
+/*   By: yliu <yliu@student.42.jp>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/10/06 09:58:34 by yliu              #+#    #+#             */
-/*   Updated: 2023/10/28 11:08:18 by yliu             ###   ########.fr       */
+/*   Created: 2023/10/28 10:53:18 by yliu              #+#    #+#             */
+/*   Updated: 2023/10/28 11:15:02 by yliu             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "get_next_line.h"
+#include "get_next_line_bonus.h"
 
 static void	*free_then_put_null(char **pointer)
 {
@@ -66,29 +66,29 @@ static char	*get_one_line(char **whole_str, char *nl_pos)
 char	*get_next_line(int fd)
 {
 	char		*line;
-	static char	*whole_str;
+	static char	*whole_str[FD_MAX + 1];
 	char		*nl_p;
 	char		*rest_str;
 
-	if (fd < 0 || fd > OPEN_MAX || BUFFER_SIZE < 0
+	if (fd < 0 || fd > FD_MAX || BUFFER_SIZE < 0
 		|| BUFFER_SIZE > SIZE_T_MAX - 1)
 		return (NULL);
-	nl_p = gnl_strchr(whole_str, '\n');
+	nl_p = gnl_strchr(whole_str[fd], '\n');
 	if (nl_p == NULL)
 	{
-		whole_str = get_whole_str_from_read(fd, &whole_str);
-		if (whole_str == NULL)
+		whole_str[fd] = get_whole_str_from_read(fd, &whole_str[fd]);
+		if (whole_str[fd] == NULL)
 			return (NULL);
-		nl_p = gnl_strchr(whole_str, '\n');
+		nl_p = gnl_strchr(whole_str[fd], '\n');
 	}
-	line = get_one_line(&whole_str, nl_p);
+	line = get_one_line(&whole_str[fd], nl_p);
 	if (line == NULL || nl_p == NULL || (nl_p != NULL && *(nl_p + 1) == '\0'))
-		return (free_then_put_null(&whole_str), line);
+		return (free_then_put_null(&whole_str[fd]), line);
 	rest_str = gnl_strndup(nl_p + 1, gnl_strlen(nl_p + 1));
 	if (rest_str == NULL)
-		return (free_then_put_null(&whole_str), line);
-	free(whole_str);
-	whole_str = rest_str;
+		return (free_then_put_null(&whole_str[fd]), line);
+	free(whole_str[fd]);
+	whole_str[fd] = rest_str;
 	return (line);
 }
 

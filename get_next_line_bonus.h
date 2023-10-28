@@ -1,17 +1,17 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   get_next_line.h                                    :+:      :+:    :+:   */
+/*   get_next_line_bonus.h                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yliu <yliu@student.42.fr>                  +#+  +:+       +#+        */
+/*   By: yliu <yliu@student.42.jp>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/10/09 17:03:31 by yliu              #+#    #+#             */
-/*   Updated: 2023/10/28 10:49:48 by yliu             ###   ########.fr       */
+/*   Created: 2023/10/28 10:55:52 by yliu              #+#    #+#             */
+/*   Updated: 2023/10/28 10:57:00 by yliu             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef GET_NEXT_LINE_H
-# define GET_NEXT_LINE_H
+#ifndef GET_NEXT_LINE_BONUS_H
+# define GET_NEXT_LINE_BONUS_H
 
 # include <stdlib.h>
 # include <unistd.h>
@@ -19,6 +19,10 @@
 
 # ifndef BUFFER_SIZE
 #  define BUFFER_SIZE 7
+# endif
+
+# ifndef FD_MAX
+#  define FD_MAX 1024
 # endif
 
 enum	e_read_return_value
