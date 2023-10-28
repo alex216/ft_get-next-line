@@ -6,7 +6,7 @@
 /*   By: yliu <yliu@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/06 09:58:34 by yliu              #+#    #+#             */
-/*   Updated: 2023/10/27 23:46:09 by yliu             ###   ########.fr       */
+/*   Updated: 2023/10/28 09:41:43 by yliu             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,7 @@
 #include <string.h>
 
 #ifndef BUFFER_SIZE
-# define BUFFER_SIZE 10000000
+# define BUFFER_SIZE 7
 #endif
 
 static void	*free_then_put_null(char **pointer)
@@ -44,7 +44,10 @@ static char	*get_whole_str_from_read(int fd, char **whole_str)
 		buf[bytes_read] = '\0';
 		*whole_str = gnl_join_then_free(whole_str, buf);
 		if (whole_str == NULL)
-			return (free(buf), NULL);
+		{
+			free(buf);
+			return (NULL);
+		}
 		if (ft_strchr(buf, '\n') != NULL)
 			break ;
 	}
@@ -56,16 +59,12 @@ static char	*get_whole_str_from_read(int fd, char **whole_str)
 
 static char	*get_one_line(char **whole_str, char *nl_pos)
 {
-	size_t		line_size;
 	char		*line;
 
 	if (nl_pos == NULL)
-		line_size = ft_strlen(*whole_str);
+		line = gnl_strndup(*whole_str, ft_strlen(*whole_str));
 	else
-		line_size = nl_pos - *whole_str + 1;
-	line = gnl_strndup(*whole_str, line_size);
-	if (line == NULL)
-		return (free_then_put_null(whole_str));
+		line = gnl_strndup(*whole_str, nl_pos - *whole_str + 1);
 	return (line);
 }
 
@@ -87,11 +86,10 @@ char	*get_next_line(int fd)
 	nl_pos = ft_strchr(whole_str, '\n');
 	line = get_one_line(&whole_str, nl_pos);
 	if (line == NULL)
-		return (NULL);
+		return (free_then_put_null(&whole_str), NULL);
 	if (nl_pos == NULL || (nl_pos != NULL && *(nl_pos + 1) == '\0'))
 		return (free_then_put_null(&whole_str), line);
-	rest_str = gnl_strndup(nl_pos + 1,
-			whole_str + ft_strlen(whole_str) - nl_pos);
+	rest_str = gnl_strndup(nl_pos + 1, ft_strlen(nl_pos + 1));
 	if (rest_str == NULL)
 		return (free_then_put_null(&whole_str), line);
 	free(whole_str);
@@ -104,7 +102,7 @@ char	*get_next_line(int fd)
 // 	system("leaks -q a.out");
 // }
 //
-//////////////////////////////////////// test function
+////////////////////////////////////// test function
 // int	main(void)
 // {
 // 	int		fd1;
@@ -115,10 +113,10 @@ char	*get_next_line(int fd)
 // 	// fd1 = open("empty.txt", O_RDONLY);
 // 	// fd1 = open("nl.txt", O_RDONLY);
 // 	// fd1 = open("oneline_withno_nl.txt", O_RDONLY);
-// 	fd1 = open("oneline_with_nl.txt", O_RDONLY);
+// 	// fd1 = open("oneline_with_nl.txt", O_RDONLY);
 // 	// fd1 = open("string_nl_string.txt", O_RDONLY);
 // 	// fd1 = open("test.txt", O_RDONLY);
-// 	// fd1 = open("multi.txt", O_RDONLY);
+// 	fd1 = open("multi.txt", O_RDONLY);
 //
 // 	if (fd1 == -1)
 // 	{
