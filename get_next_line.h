@@ -6,7 +6,7 @@
 /*   By: yliu <yliu@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/09 17:03:31 by yliu              #+#    #+#             */
-/*   Updated: 2023/10/31 10:57:39 by yliu             ###   ########.fr       */
+/*   Updated: 2023/10/31 17:47:40 by yliu             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,11 +25,8 @@
 #  define FD_MAX 256
 # endif
 
-enum	e_read_return_value
-{
-	READ_ERROR = -1,
-	READ_END = 0
-};
+# define READ_ERROR -1
+# define READ_END 0
 
 enum	e_return_value
 {
