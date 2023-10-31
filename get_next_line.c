@@ -6,11 +6,15 @@
 /*   By: yliu <yliu@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/06 09:58:34 by yliu              #+#    #+#             */
-/*   Updated: 2023/10/31 09:00:59 by yliu             ###   ########.fr       */
+/*   Updated: 2023/10/31 10:58:42 by yliu             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "get_next_line.h"
+
+#if BUFFER_SIZE <= 0
+# error "BUFFER_SIZE must be positive"
+#endif
 
 static void	*free_then_put_null(char **pointer)
 {
@@ -62,7 +66,7 @@ static char	*get_one_line(char **whole_str, char *nl_pos)
 }
 
 // first func's NULL guard is for both malloc fail and READ_ERROR.
-// second and third func's NULL guard is for malloc fail.
+// second and third func's NULL guard are for when malloc failed.
 char	*get_next_line(int fd)
 {
 	char		*line;
@@ -93,10 +97,12 @@ char	*get_next_line(int fd)
 
 // __attribute__ ((destructor)) static void destructor()
 // {
-// 	system("leaks -q a.out");
+// 	if (system("leaks -q a.out > /dev/null 2> /dev/null"))
+// 		system("leaks -q a.out");
 // }
 //
-////////////////////////////////////// test function
+// ////////////////////////////////////// test function
+//
 // #include <fcntl.h>
 // #include <stdio.h>
 // #include <errno.h>
@@ -105,7 +111,7 @@ char	*get_next_line(int fd)
 // {
 // 	int		fd1;
 // 	int		i;
-// 	char	*result;
+// 	char	*result = NULL;
 //
 // 	// fd1 = 0;
 // 	// fd1 = open("empty.txt", O_RDONLY);
@@ -114,8 +120,8 @@ char	*get_next_line(int fd)
 // 	// fd1 = open("oneline_with_nl.txt", O_RDONLY);
 // 	// fd1 = open("string_nl_string.txt", O_RDONLY);
 // 	// fd1 = open("test.txt", O_RDONLY);
-// 	// fd1 = open("multi.txt", O_RDONLY);
-// 	fd1 = open("get_next_line_bonus.c", O_RDONLY);
+// 	fd1 = open("multi.txt", O_RDONLY);
+// 	// fd1 = open("get_next_line.c", O_RDONLY);
 //
 // 	if (fd1 == -1)
 // 	{
@@ -124,7 +130,8 @@ char	*get_next_line(int fd)
 // 	}
 //
 // 	i = 0;
-// 	while (result != NULL)
+// 	while (i == 0 || result != NULL)
+// 	// while (i == 0 || result != NULL)
 // 	{
 // 		result = get_next_line(fd1);
 // 		if (result == NULL)
