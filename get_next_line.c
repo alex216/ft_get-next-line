@@ -6,11 +6,12 @@
 /*   By: yliu <yliu@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/06 09:58:34 by yliu              #+#    #+#             */
-/*   Updated: 2023/10/31 17:48:33 by yliu             ###   ########.fr       */
+/*   Updated: 2023/10/31 22:04:55 by yliu             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "get_next_line.h"
+#include <stddef.h>
 
 #if BUFFER_SIZE <= 0
 # error "BUFFER_SIZE must be positive"
@@ -95,12 +96,22 @@ char	*get_next_line(int fd)
 	return (line);
 }
 
-// __attribute__ ((destructor)) static void destructor()
+// int	cnt = 1;
+//
+// void	*malloc(size_t st)
 // {
-// 	if (system("leaks -q a.out > /dev/null 2> /dev/null"))
-// 		system("leaks -q a.out");
+// 	if (cnt++ == 4)
+// 		return (NULL);
+// 	else
+// 		return (calloc(1, st));
 // }
 //
+// // __attribute__ ((destructor)) static void destructor()
+// // {
+// // 	if (system("leaks -q a.out > /dev/null 2> /dev/null"))
+// // 		system("leaks -q a.out");
+// // }
+// //
 // ////////////////////////////////////// test function
 //
 // #include <fcntl.h>
@@ -120,8 +131,8 @@ char	*get_next_line(int fd)
 // 	// fd1 = open("oneline_with_nl.txt", O_RDONLY);
 // 	// fd1 = open("string_nl_string.txt", O_RDONLY);
 // 	// fd1 = open("test.txt", O_RDONLY);
-// 	fd1 = open("multi.txt", O_RDONLY);
-// 	// fd1 = open("get_next_line.c", O_RDONLY);
+// 	// fd1 = open("multi.txt", O_RDONLY);
+// 	fd1 = open("get_next_line.c", O_RDONLY);
 //
 // 	if (fd1 == -1)
 // 	{
@@ -130,7 +141,6 @@ char	*get_next_line(int fd)
 // 	}
 //
 // 	i = 0;
-// 	fd1 = 0;
 // 	while (i == 0 || result != NULL)
 // 	// while (i == 0 || result != NULL)
 // 	{
