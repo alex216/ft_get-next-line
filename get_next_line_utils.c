@@ -6,7 +6,7 @@
 /*   By: yliu <yliu@student.42.jp>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/26 00:07:26 by yliu              #+#    #+#             */
-/*   Updated: 2023/10/28 10:45:26 by yliu             ###   ########.fr       */
+/*   Updated: 2023/10/31 10:56:54 by yliu             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,7 @@ size_t	gnl_strlen(const char *str)
 	return (i);
 }
 
-// original libft
+// original libft func
 char	*gnl_strchr(const char *s, int c)
 {
 	if (s == NULL)
@@ -75,9 +75,10 @@ char	*gnl_strndup(const char *src, size_t n)
 }
 
 // free s1 before return.
-// s1 is a pointer must allocating somewhere.
-// s2:NULL is impossible due to READ_ERROR is
-// considered. however, it returns s1.
+// s1 is a pointer must pointing alloed area.
+// s2=NULL is impossible because READ_ERROR is
+// return earily before this func is called.
+// either way, it returns s1.
 char	*gnl_join_then_free(char **s1, char const *s2)
 {
 	char	*dst;

@@ -6,7 +6,7 @@
 /*   By: yliu <yliu@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/09 17:03:31 by yliu              #+#    #+#             */
-/*   Updated: 2023/10/28 11:51:23 by yliu             ###   ########.fr       */
+/*   Updated: 2023/10/31 21:18:51 by yliu             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,19 +18,20 @@
 # include <limits.h>
 
 # ifndef BUFFER_SIZE
-#  define BUFFER_SIZE 7
+#  define BUFFER_SIZE 1000
 # endif
 
-enum	e_read_return_value
-{
-	READ_ERROR = -1,
-	READ_END = 0
-};
+# ifndef FD_MAX
+#  define FD_MAX 256
+# endif
+
+# define READ_ERROR -1
+# define READ_END 0
 
 enum	e_return_value
 {
-	FAILURE = 0,
-	SUCCESS = 1
+	SUCCESS = 0,
+	FAILURE = 1
 };
 
 char	*get_next_line(int fd);

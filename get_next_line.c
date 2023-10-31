@@ -6,11 +6,16 @@
 /*   By: yliu <yliu@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/06 09:58:34 by yliu              #+#    #+#             */
-/*   Updated: 2023/10/28 11:56:43 by yliu             ###   ########.fr       */
+/*   Updated: 2023/10/31 22:04:55 by yliu             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "get_next_line.h"
+#include <stddef.h>
+
+#if BUFFER_SIZE <= 0
+# error "BUFFER_SIZE must be positive"
+#endif
 
 static void	*free_then_put_null(char **pointer)
 {
@@ -62,41 +67,53 @@ static char	*get_one_line(char **whole_str, char *nl_pos)
 }
 
 // first func's NULL guard is for both malloc fail and READ_ERROR.
-// second and third func's NULL guard is for malloc fail.
+// second and third func's NULL guard are for when malloc failed.
 char	*get_next_line(int fd)
 {
 	char		*line;
-	static char	*whole_str;
+	static char	*whole_str[FD_MAX + 1];
 	char		*nl_p;
 	char		*rest_str;
 
-	if (fd < 0 || fd > OPEN_MAX || BUFFER_SIZE < 0
+	if (fd < 0 || fd > FD_MAX || BUFFER_SIZE < 0
 		|| BUFFER_SIZE > SIZE_T_MAX - 1)
 		return (NULL);
-	nl_p = gnl_strchr(whole_str, '\n');
+	nl_p = gnl_strchr(whole_str[fd], '\n');
 	if (nl_p == NULL)
 	{
-		if (get_whole_str_from_read(fd, &whole_str) == FAILURE)
+		if (get_whole_str_from_read(fd, &whole_str[fd]) == FAILURE)
 			return (NULL);
-		nl_p = gnl_strchr(whole_str, '\n');
+		nl_p = gnl_strchr(whole_str[fd], '\n');
 	}
-	line = get_one_line(&whole_str, nl_p);
+	line = get_one_line(&whole_str[fd], nl_p);
 	if (line == NULL || nl_p == NULL || (nl_p != NULL && *(nl_p + 1) == '\0'))
-		return (free_then_put_null(&whole_str), line);
+		return (free_then_put_null(&whole_str[fd]), line);
 	rest_str = gnl_strndup(nl_p + 1, gnl_strlen(nl_p + 1));
 	if (rest_str == NULL)
-		return (free_then_put_null(&whole_str), line);
-	free(whole_str);
-	whole_str = rest_str;
+		return (free_then_put_null(&whole_str[fd]), line);
+	free(whole_str[fd]);
+	whole_str[fd] = rest_str;
 	return (line);
 }
 
-// __attribute__ ((destructor)) static void destructor()
+// int	cnt = 1;
+//
+// void	*malloc(size_t st)
 // {
-// 	system("leaks -q a.out");
+// 	if (cnt++ == 4)
+// 		return (NULL);
+// 	else
+// 		return (calloc(1, st));
 // }
 //
-////////////////////////////////////// test function
+// // __attribute__ ((destructor)) static void destructor()
+// // {
+// // 	if (system("leaks -q a.out > /dev/null 2> /dev/null"))
+// // 		system("leaks -q a.out");
+// // }
+// //
+// ////////////////////////////////////// test function
+//
 // #include <fcntl.h>
 // #include <stdio.h>
 // #include <errno.h>
@@ -105,7 +122,7 @@ char	*get_next_line(int fd)
 // {
 // 	int		fd1;
 // 	int		i;
-// 	char	*result;
+// 	char	*result = NULL;
 //
 // 	// fd1 = 0;
 // 	// fd1 = open("empty.txt", O_RDONLY);
@@ -115,7 +132,7 @@ char	*get_next_line(int fd)
 // 	// fd1 = open("string_nl_string.txt", O_RDONLY);
 // 	// fd1 = open("test.txt", O_RDONLY);
 // 	// fd1 = open("multi.txt", O_RDONLY);
-// 	fd1 = open("get_next_line_bonus.c", O_RDONLY);
+// 	fd1 = open("get_next_line.c", O_RDONLY);
 //
 // 	if (fd1 == -1)
 // 	{
@@ -124,7 +141,8 @@ char	*get_next_line(int fd)
 // 	}
 //
 // 	i = 0;
-// 	while (result != NULL)
+// 	while (i == 0 || result != NULL)
+// 	// while (i == 0 || result != NULL)
 // 	{
 // 		result = get_next_line(fd1);
 // 		if (result == NULL)
