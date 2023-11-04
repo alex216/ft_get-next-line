@@ -6,7 +6,7 @@
 /*   By: yliu <yliu@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/06 09:58:34 by yliu              #+#    #+#             */
-/*   Updated: 2023/10/31 22:04:55 by yliu             ###   ########.fr       */
+/*   Updated: 2023/11/04 14:40:31 by yliu             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -96,15 +96,20 @@ char	*get_next_line(int fd)
 	return (line);
 }
 
-// int	cnt = 1;
+// #ifndef FAIL_NUM
+// #define FAIL_NUM 20
+// #endif
 //
 // void	*malloc(size_t st)
 // {
-// 	if (cnt++ == 4)
+// 	if (cnt++ == FAIL_NUM)
 // 		return (NULL);
 // 	else
 // 		return (calloc(1, st));
 // }
+// for i in {1..10}; \
+// do echo ${i}; clw *.c -D FAIL_NUM={i} && ./a.out; \
+// done
 //
 // // __attribute__ ((destructor)) static void destructor()
 // // {
