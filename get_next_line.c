@@ -6,7 +6,7 @@
 /*   By: yliu <yliu@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/06 09:58:34 by yliu              #+#    #+#             */
-/*   Updated: 2023/11/15 20:53:25 by yliu             ###   ########.fr       */
+/*   Updated: 2023/11/15 20:54:11 by yliu             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -129,7 +129,7 @@ void	*malloc(size_t st)
 #include <stdio.h>
 #include <errno.h>
 
-int	main(void)
+int	main(oid)
 {
 	int		fd1;
 	int		i;
