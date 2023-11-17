@@ -6,11 +6,13 @@
 /*   By: yliu <yliu@student.42.jp>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/26 00:07:26 by yliu              #+#    #+#             */
-/*   Updated: 2023/10/31 10:56:54 by yliu             ###   ########.fr       */
+/*   Updated: 2023/11/16 18:52:02 by yliu             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "get_next_line.h"
+#include <stddef.h>
+#include <stdlib.h>
 
 // if str is NULL return 0.
 size_t	gnl_strlen(const char *str)
@@ -79,7 +81,7 @@ char	*gnl_strndup(const char *src, size_t n)
 // s2=NULL is impossible because READ_ERROR is
 // return earily before this func is called.
 // either way, it returns s1.
-char	*gnl_join_then_free(char **s1, char const *s2)
+size_t	gnl_join_then_free(char **s1, char const *s2)
 {
 	char	*dst;
 	size_t	s1_len;
@@ -88,22 +90,20 @@ char	*gnl_join_then_free(char **s1, char const *s2)
 	s1_len = gnl_strlen(*s1);
 	s2_len = gnl_strlen(s2);
 	if (s1 == NULL || (*s1 == NULL && s2 == NULL))
-		return (NULL);
+		return (EXIT_FAILURE);
 	if (*s1 == NULL)
 	{
-		dst = gnl_strndup(s2, gnl_strlen(s2));
-		return (dst);
+		*s1 = gnl_strndup(s2, gnl_strlen(s2));
+		return (EXIT_SUCCESS);
 	}
 	if (s2 == NULL)
-		return (*s1);
+		return (EXIT_SUCCESS);
 	dst = malloc(sizeof(char) * (s1_len + s2_len + 1));
 	if (dst == NULL)
-	{
-		free(*s1);
-		return (NULL);
-	}
+		return (EXIT_FAILURE);
 	gnl_strlcpy(dst, *s1, s1_len + 1);
 	gnl_strlcpy(dst + s1_len, s2, s2_len + 1);
 	free(*s1);
-	return (dst);
+	*s1 = dst;
+	return (EXIT_SUCCESS);
 }
